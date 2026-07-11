@@ -29,7 +29,7 @@ Usage:
     disco-room --project /path/to/content --profile lien beat
     DISCO_ROOM_PROJECT=/path/to/content DISCO_PROFILE=lien disco-room status
 """
-import sqlite3, os, sys, re, random, json
+import ast, sqlite3, os, sys, re, random, json
 
 PROJ = os.path.abspath(os.environ.get("DISCO_ROOM_PROJECT", os.getcwd()))
 ROM = os.path.abspath(os.environ.get("DISCO_ROOM_ROM", os.path.join(PROJ, "data", "disco-rom.db")))
@@ -340,17 +340,50 @@ def _cond_namespace(vars, inv, vit=None, clock=None):
         "FinishTask":         lambda name: bool(vars.get(name, False)),
     }
 
+_ALLOWED_CONDITION_NODES = (
+    ast.Expression,
+    ast.BoolOp, ast.And, ast.Or,
+    ast.UnaryOp, ast.Not, ast.USub, ast.UAdd,
+    ast.Compare, ast.Eq, ast.NotEq, ast.Lt, ast.LtE, ast.Gt, ast.GtE,
+    ast.Call, ast.Name, ast.Load, ast.Constant, ast.Subscript,
+)
+
+def _validated_condition(expr, namespace):
+    """Compile the condition subset without exposing general Python execution."""
+    tree = ast.parse(expr, mode="eval")
+    for node in ast.walk(tree):
+        if not isinstance(node, _ALLOWED_CONDITION_NODES):
+            raise ValueError(f"condition syntax is not allowed: {type(node).__name__}")
+        if isinstance(node, ast.Name) and node.id not in namespace:
+            raise ValueError(f"condition name is not allowed: {node.id}")
+        if isinstance(node, ast.Call):
+            if not isinstance(node.func, ast.Name):
+                raise ValueError("condition calls must target a named predicate")
+            target = namespace.get(node.func.id)
+            if not callable(target) or node.keywords:
+                raise ValueError(f"condition call is not allowed: {node.func.id}")
+        if isinstance(node, ast.Subscript):
+            if not isinstance(node.value, ast.Name) or node.value.id != "Variable":
+                raise ValueError("only Variable[...] subscripts are allowed")
+            if not isinstance(node.slice, ast.Constant) or not isinstance(node.slice.value, str):
+                raise ValueError("Variable keys must be string literals")
+    return compile(tree, "<condition>", "eval")
+
 def eval_condition(expr, vars, inv, vit=None, clock=None):
     """Evaluate a DE condition string against profile vars + inventory. Fail-open (True) + warn.
     `vit` (vitality pools) lets HasVolitionDamage/HasEnduranceDamage reflect current wounds.
-    `clock` ({day,minute}) lets the time/day predicates reflect the live world-clock."""
+    `clock` ({day,minute}) lets the time/day predicates reflect the live world-clock.
+    The expression is AST-validated before evaluation; content cannot access
+    Python attributes, imports, comprehensions, lambdas, or dynamic call targets."""
     expr = (expr or "").strip()
     expr = re.sub(r"--\[\[.*?\]\]", "", expr, flags=re.S).strip()   # strip Lua long comments
     expr = normalize_condition_expr(expr)
     if not expr:
         return True
     try:
-        return bool(eval(expr, _cond_namespace(vars, inv, vit, clock)))
+        namespace = _cond_namespace(vars, inv, vit, clock)
+        code = _validated_condition(expr, namespace)
+        return bool(eval(code, namespace))
     except Exception as e:
         sys.stderr.write(f"[cond fail-open] {expr!r}: {e}\n")
         return True

@@ -58,6 +58,10 @@ The equivalent environment variables are:
 See `docs/content-project.md` for the JSON contracts and runtime ownership
 boundary.
 
+Condition expressions are parsed through a strict AST allowlist before their
+approved predicates run. Userscripts are handled by a narrow call parser, not a
+Lua or Python interpreter. See `SECURITY.md` for the remaining trust boundary.
+
 ## Verify
 
 ```sh

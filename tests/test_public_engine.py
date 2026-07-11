@@ -1,4 +1,6 @@
 import importlib.util
+import contextlib
+import io
 import os
 import shutil
 import subprocess
@@ -69,6 +71,16 @@ class PublicEngineTests(unittest.TestCase):
             'SetVariableValue("demo.notebook_open", true)', variables, {}
         )
         self.assertTrue(variables["demo.notebook_open"])
+
+    def test_condition_ast_rejects_python_object_access(self):
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr):
+            result = room.eval_condition(
+                "Variable.__class__.__mro__[1].__subclasses__()", {}, {}
+            )
+        self.assertTrue(result)  # malformed conditions retain fail-open semantics
+        self.assertIn("[cond fail-open]", stderr.getvalue())
+        self.assertIn("condition calls must target a named predicate", stderr.getvalue())
 
     def test_content_compatibility_rules_are_data_driven(self):
         room.COMPAT = {
