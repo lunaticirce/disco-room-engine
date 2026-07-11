@@ -1,0 +1,15 @@
+{
+  "id": "demo",
+  "name": "Demo Detective",
+  "save": "data/demo-save.db",
+  "attrs": {
+    "Intellect": 4,
+    "Psyche": 4,
+    "Physique": 2,
+    "Motorics": 2
+  },
+  "signature_skill": "Inland Empire",
+  "notes": [
+    "Original synthetic content bundled with Disco Room Engine."
+  ]
+}

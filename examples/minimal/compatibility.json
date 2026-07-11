@@ -1,0 +1,11 @@
+{
+  "party_variables": {
+    "kim": "demo.kim_present",
+    "cuno": "demo.cuno_present"
+  },
+  "hidden_player_lines": [],
+  "condition_replacements": {},
+  "auto_equip_items": [],
+  "node_set_vars": {},
+  "state_repairs": []
+}

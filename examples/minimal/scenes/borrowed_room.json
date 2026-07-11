@@ -1,0 +1,13 @@
+{
+  "id": "borrowed_room",
+  "name": "Borrowed Room",
+  "blurb": "A green-shaded lamp hums beside a blank notebook.",
+  "home_convs": [1],
+  "points": [
+    {
+      "label": "The humming lamp and notebook",
+      "conv": 1
+    }
+  ],
+  "exits": []
+}
