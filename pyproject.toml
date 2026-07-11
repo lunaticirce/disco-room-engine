@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "disco-room-engine"
 version = "0.1.0"
-description = "A local, data-driven runtime for Disco-style dialogue graphs and curated rooms"
+description = "一个在本地运行、由数据驱动的叙事游戏引擎，承载带有大量条件分支的对话图与手工策展的房间菜单"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}

@@ -1,11 +1,5 @@
-# Coverage analysis
+# 覆盖分析
 
-`coverage` is a curator tool, not automatic navigation. It reads active task
-signals, userscripts, conditions, and the curated scene index to identify
-forward conversations that appear structurally relevant but have no scene
-point.
+`coverage` 是一个给策展者用的工具，不是自动导航。它读取活跃任务信号、用户脚本、条件以及已策展的场景索引，用来找出那些在结构上看起来相关、却还没有场景交互点指向它们的前向对话。
 
-The analysis deliberately stays conservative. It can explain condition
-blockers inside a conversation, but it does not infer geography, narrative
-importance, or whether revealing a graph branch would spoil future content.
-Those decisions belong to the curator.
+这项分析刻意保持保守。它能解释一段对话内部的条件阻塞，但不会去推断地理位置、叙事重要性，也不会判断「揭示某个对话图分支是否会剧透后续内容」。这些判断都交还给策展者。

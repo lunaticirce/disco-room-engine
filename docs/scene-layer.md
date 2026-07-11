@@ -1,14 +1,7 @@
-# Scene layer
+# 场景层
 
-The raw dialogue graph is not a player-facing map. It may contain debug nodes,
-future branches, condition routers, and conversations that share no physical
-location. Deriving navigation from that graph would expose unearned structure.
+原始对话图并不是面向玩家的地图。它可能包含调试节点、未来分支、条件路由节点，以及并不共享同一物理位置的对话。从这样的图里派生导航，会把玩家尚未挣到的结构暴露出来。
 
-A scene is therefore a hand-curated spatial menu above the graph. Points enter
-conversations; exits move between scenes. When a conversation terminates, the
-engine returns to its current scene or a curated home scene for that
-conversation.
+因此，「场景」是建立在对话图之上、由人工策展的空间菜单。交互点（point）用于进入对话，出口（exit）用于在场景之间移动。当一段对话结束时，引擎会回到当前场景，或回到为该对话策展的归属场景（home scene）。
 
-`show_when` hides unearned points. `done_when` retires exhausted points. Scene
-conditions use the same variable, inventory, vitality, and clock semantics as
-dialogue conditions.
+`show_when` 隐藏尚未出现的交互点；`done_when` 让已经穷尽的交互点退场。场景条件使用的变量、物品、生命士气与世界时钟语义，与对话条件完全相同。

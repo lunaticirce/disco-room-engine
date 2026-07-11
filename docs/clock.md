@@ -1,13 +1,9 @@
-# World clock
+# 世界时钟
 
-Each save stores `day` and `minute`, where minute is normalized to `0..1439`.
-Dialogue and scene conditions receive the same clock.
+每个存档保存 `day`（天数）和 `minute`（分钟），其中 minute 归一化到 `0..1439`。对话条件和场景条件读到的是同一个时钟。
 
-- `PassTime()` advances 15 minutes per call.
-- `LetterSleep()` advances to 08:00 on the next day.
-- A scene point may use `advance: "morning"`, `advance: "night"`, or a numeric
-  minute delta.
+- `PassTime()` 每调用一次推进 15 分钟。
+- `LetterSleep()` 推进到次日上午 08:00。
+- 场景交互点可以用 `advance: "morning"`、`advance: "night"`，或一个数值分钟增量。
 
-Repeated traversal only replays userscript verbs with explicit repeat
-semantics. This lets a player deliberately wait again without replaying every
-story mutation on that node.
+重复遍历只会重放那些有明确重复语义的用户脚本动词。这样玩家可以刻意再次等待，而不会把该节点上的每一条剧情变更都重新触发一遍。

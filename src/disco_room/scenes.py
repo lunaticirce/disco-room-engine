@@ -106,7 +106,7 @@ def current_scene_id():
 
 def set_scene(scene_id):
     if not os.path.exists(room.SAVE):
-        print(f"房间是空的。先: room.py --profile {room.PROFILE_NAME} start <conv>")
+        print(f"房间是空的。先: disco-room --profile {room.PROFILE_NAME} start <conv>")
         return
     c = room.save(); _ensure_scene_table(c)
     c.execute("INSERT INTO scene(key,id) VALUES(1,?) ON CONFLICT(key) DO UPDATE SET id=excluded.id", (scene_id,))

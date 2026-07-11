@@ -1,23 +1,13 @@
-# Security
+# 安全
 
-## Content execution boundary
+## 内容执行边界
 
-Condition strings are normalized, parsed as Python expressions, and rejected
-unless every AST node belongs to the engine's small condition grammar. Calls
-may target only named predicates supplied by the engine; attribute access,
-imports, lambdas, comprehensions, arbitrary subscripts, and dynamic call
-targets are rejected before evaluation.
+条件字符串会被归一化、解析为 Python 表达式，并在执行前接受检查——只有当每一个抽象语法树（AST）节点都属于引擎那套极小的条件语法时才会放行。调用只能指向引擎提供的具名谓词；属性访问、导入、lambda、推导式、任意下标以及动态调用目标，都会在求值之前被拒绝。
 
-Userscripts are not passed to a Lua or Python interpreter. The engine extracts
-and handles an explicit set of state verbs.
+用户脚本不会被交给 Lua 或 Python 解释器执行。引擎只提取并处理一组明确的状态动词。
 
-Content projects still control player-facing text, file paths inside profiles,
-graph size, and save locations. Treat a content pack like a local application
-project: inspect its profiles and provenance before running it, and do not use
-the engine as a sandbox for hostile data.
+内容项目仍然掌控着面向玩家的文本、档案内部的文件路径、对话图规模以及存档位置。请像对待一个本地应用项目那样对待内容包：运行前先检查它的档案与来源，不要把引擎当作处理恶意数据的沙箱。
 
-## Reporting
+## 报告漏洞
 
-Until a public security contact is configured, do not publish a proof of
-concept containing private data. Report the issue privately to the repository
-owner and include the smallest synthetic reproduction possible.
+在公开的安全联系方式配置好之前，请不要公开包含私密数据的概念验证（proof of concept）。请私下将问题报告给仓库维护者，并附上尽可能小的合成复现样例。

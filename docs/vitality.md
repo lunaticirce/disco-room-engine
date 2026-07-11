@@ -1,9 +1,5 @@
-# Vitality
+# 生命与士气
 
-Each save has Health and Morale current/max pools. Userscript damage and healing
-verbs mutate these pools during graph traversal, and the CLI surfaces the delta
-beside the beat that caused it.
+每个存档都有生命（Health）与士气（Morale）两个「当前值 / 上限」池。用户脚本中的伤害与治疗动词会在对话图遍历过程中改变这些池的值，命令行会把这次变化显示在引发它的那一拍旁边。
 
-The current room design treats zero as a dramatic edge rather than a permanent
-save lock: the depleted pool is restored after the breakdown is surfaced.
-Content projects may present that behavior narratively through their own text.
+当前的房间设计把「归零」当作一个戏剧性的边缘时刻，而不是永久的存档锁死：在呈现崩溃之后，被耗尽的池会立刻回满。内容项目可以通过自己的文本把这个行为叙述出来。

@@ -1,10 +1,8 @@
-# Content project contract
+# 内容项目约定
 
-The engine package is read-only with respect to content definitions. A content
-project supplies the graph database, profile definitions, and scene JSON. Only
-the selected profile save is mutated during play.
+引擎包对内容定义是只读的。内容项目负责提供对话图数据库、玩家档案定义和场景 JSON。游玩过程中只有当前选中档案的存档会被写入。
 
-## Layout
+## 目录结构
 
 ```text
 project/
@@ -14,12 +12,11 @@ project/
 └── scenes/<scene>.json
 ```
 
-Paths in a profile are relative to the project root unless absolute.
+档案中的路径除非是绝对路径，否则都相对于项目根目录。
 
-## Compatibility rules
+## 兼容性规则
 
-Content-specific extractor repairs and graph exceptions live outside the
-engine in `compatibility.json`:
+针对特定内容的提取器修补与对话图例外，都放在引擎之外的 `compatibility.json` 里：
 
 ```json
 {
@@ -45,10 +42,9 @@ engine in `compatibility.json`:
 }
 ```
 
-All keys are optional. This keeps quirks of one graph or extractor out of the
-runtime while preserving exact behavior for that content pack.
+所有字段都是可选的。这样能把某一个对话图或提取器的怪癖挡在运行时之外，同时仍为该内容包保留完全一致的行为。
 
-## Profile
+## 玩家档案（Profile）
 
 ```json
 {
@@ -66,7 +62,7 @@ runtime while preserving exact behavior for that content pack.
 }
 ```
 
-## Scene
+## 场景（Scene）
 
 ```json
 {
@@ -81,13 +77,8 @@ runtime while preserving exact behavior for that content pack.
 }
 ```
 
-Supported scene point keys are `label`, `conv`, `node`, `show_when`,
-`done_when`, `gain_item`, `set_vars`, `advance`, and `repeat_heal`. Exits use
-`label`, `to`, `show_when`, and `set_vars`. An ending may define
-`show_when`, `title`, `text`, and `continue_to` exits.
+场景交互点（point）支持的字段有 `label`、`conv`、`node`、`show_when`、`done_when`、`gain_item`、`set_vars`、`advance` 和 `repeat_heal`。出口（exit）使用 `label`、`to`、`show_when` 和 `set_vars`。一个结局（ending）可以定义 `show_when`、`title`、`text` 以及 `continue_to` 出口。
 
-## Database
+## 数据库
 
-The runtime expects SQLite tables named `actors`, `temp_table`, `dlinks`,
-`variables`, `checks`, and `modifiers`. The synthetic builder under
-`examples/minimal` is the executable schema example.
+运行时期望 SQLite 中存在以下数据表：`actors`、`temp_table`、`dlinks`、`variables`、`checks` 和 `modifiers`。`examples/minimal` 下的合成构建脚本是可执行的 schema 示例。

@@ -1,13 +1,7 @@
-# Project notice
+# 项目声明
 
-Disco Room Engine is an unofficial fan-made software project. It is not
-affiliated with or endorsed by ZA/UM or the owners of Disco Elysium.
+迪斯科房间引擎（Disco Room Engine）是一个非官方的同人软件项目，与 ZA/UM 及《极乐迪斯科》（Disco Elysium）的权利人没有任何隶属或背书关系。
 
-This repository contains engine code and original synthetic examples only. It
-does not include Disco Elysium dialogue, art, audio, extracted databases, save
-files, or other game assets. Users are responsible for supplying content they
-have the right to use.
+本仓库只包含引擎代码与原创的合成示例，不含《极乐迪斯科》的对白、美术、音频、提取数据库、存档或任何其它游戏素材。使用者需自行提供其有权使用的内容。
 
-The MIT license in this repository applies only to files distributed from this
-repository. It does not grant rights to third-party content loaded by the
-engine.
+本仓库中的 MIT 许可证只适用于本仓库实际分发的文件，不授予引擎在本地加载的第三方内容的任何权利。

@@ -1,33 +1,11 @@
 #!/usr/bin/env python3
-"""Disco Elysium room engine.
+"""Disco Room Engine — a local, data-driven runtime for condition-heavy dialogue
+graphs. Content (the dialogue database, profiles, scenes, saves) lives in a
+separate content project pointed to by --project; this package ships none of it.
 
-ROM  : data/disco-rom.db   (community-extracted game logic, READ-ONLY)
-SAVE : selected by profile, e.g. data/ash-save.db or data/lien-save.db
-
-A "beat" = the NPC line(s) currently being heard, plus the player's options.
-
-THE GRAPH. Nodes live in `temp_table` (the FULL graph — `dentries` is a filtered
-subset that drops condition-routing nodes, so it can't carry conditional scenes).
-Node kinds:
-  - dialogue nodes: have prose in `dialoguetext` (not '0'), `actor` = speaker.
-  - routing/condition nodes: text '0', `conditionstring` is a gate expression.
-  - structural: START / input / isgroup / "Jump to:" (sequence-driven).
-
-VISIBILITY = conditions. A node is traversable only if its `conditionstring`
-evaluates true against the current profile's world-vars (empty condition = always).
-This hides branches the detective hasn't earned — the whole reason an engine
-exists, not a browser.
-
-CHECKS. A player-line node with `hascheck` is a dice moment: look up `checks`
-(skill, difficulty=DC, red/white, flag). ROM modifiers are difficulty deltas
-(negative helps), converted into an effective skill for display/odds. The roll
-SETS the flag; snake-eyes always fail and boxcars always succeed.
-downstream condition nodes route success/failure automatically.
-
-Usage:
-    disco-room --project /path/to/content start 1406
-    disco-room --project /path/to/content --profile lien beat
-    DISCO_ROOM_PROJECT=/path/to/content DISCO_PROFILE=lien disco-room status
+A "beat" is the NPC line(s) currently being heard plus the player's options.
+Visibility is condition-driven: a branch is shown only when the current
+profile's world-state has earned it. Run `disco-room help` for the command list.
 """
 import ast, sqlite3, os, sys, re, random, json
 
@@ -112,7 +90,7 @@ def _project_path(path):
 def load_profile(name):
     path = os.path.join(PROFILES, f"{name}.json")
     if not os.path.exists(path):
-        raise SystemExit(f"找不到 profile: {name}（看 profiles/ 或运行 room.py profiles）")
+        raise SystemExit(f"找不到档案: {name}（看 profiles/ 目录，或运行 disco-room profiles）")
     with open(path, "r", encoding="utf-8") as f:
         raw = json.load(f)
     attrs = raw.get("attrs", DEFAULT_ATTRS)
@@ -1106,7 +1084,7 @@ def save_clock(c, clock):
 
 def surface_vitality(before, after):
     """Print inline damage/heal changes (like the check-roll line). Beats otherwise stay clean."""
-    for cur, maxk, label, icon in (("morale_cur","morale_max","Morale","🧠"), ("health_cur","health_max","Health","❤️")):
+    for cur, maxk, label, icon in (("morale_cur","morale_max","士气","🧠"), ("health_cur","health_max","生命","❤️")):
         d = after[cur] - before[cur]
         if d:
             print(f"   {icon} {label} {'+' if d > 0 else ''}{d} → {after[cur]}/{after[maxk]}")
@@ -1124,9 +1102,9 @@ def print_breakdown(broke):
     """Play the edge: a breakdown line per depleted pool. Visit it, then come back — never bricked."""
     for b in broke:
         if b == "morale":
-            print("   🧠 Morale 归零——虚无短暂接管了方向盘。然后 Volition 把你拽回来。")
+            print("   🧠 士气归零——虚无短暂接管了方向盘。然后意志把你拽回来。")
         else:
-            print("   ❤️ Health 归零——躯壳撑不住、你倒下。然后又被拉了起来。")
+            print("   ❤️ 生命归零——躯壳撑不住、你倒下。然后又被拉了起来。")
 
 def make_fire(c, vars, inv, fired, vit=None, clock=None, repeat_existing=False):
     """Return a node-arrival callback.
@@ -1334,9 +1312,9 @@ def cmd_coverage():
     same-conv reachability from the entry to the FinishTask node under current save
     conditions — covered != reachable. Structural only (no prose), stdout only."""
     if not os.path.exists(SAVE):
-        print(f"房间是空的。先: room.py --profile {PROFILE_NAME} start <conv>"); return
+        print(f"房间是空的。先: disco-room --profile {PROFILE_NAME} start <conv>"); return
     sc = save(); vars = load_vars(sc); inv = load_inventory(sc); clock = load_clock(sc); sc.close()
-    import scenes
+    scenes = scene_module()
     sid = scenes.current_scene_id()
     rc = rom()
     idx = build_task_advancing_index(rc)
@@ -1447,7 +1425,7 @@ def cmd_beat():
         scenes = scene_module()
         if scenes.current_scene_id():
             scenes.cmd_scene(); return
-        print(f"房间是空的。先: room.py --profile {PROFILE_NAME} start <conv>"); return
+        print(f"房间是空的。先: disco-room --profile {PROFILE_NAME} start <conv>"); return
     scenes = scene_module()
     if scenes.maybe_show_ending():
         return
@@ -1494,7 +1472,7 @@ def cmd_choose(n):
         if scenes.current_scene_id():
             print("（你在场景菜单，不在对话里——`choose` 是对话选项。）看场景用 `look N`，或 `scene` 看当前场景。")
             return
-        print(f"房间是空的。先: room.py --profile {PROFILE_NAME} start <conv>")
+        print(f"房间是空的。先: disco-room --profile {PROFILE_NAME} start <conv>")
         return
     rc = rom(); sc = save()
     vars = load_vars(sc); skills = load_skills(sc); fired = load_fired(sc); inv = load_inventory(sc)
@@ -1588,8 +1566,8 @@ def cmd_start(conv, announce=True, node=None):
 
 def cmd_where():
     conv, node = position()
-    print(f"Profile: {profile_label()}")
-    print(f"Save: {os.path.relpath(SAVE, PROJ)}")
+    print(f"档案: {profile_label()}")
+    print(f"存档: {os.path.relpath(SAVE, PROJ)}")
     print(f"位置: conv {conv} · node {node}")
     if os.path.exists(SAVE):
         c = save()
@@ -1600,8 +1578,8 @@ def cmd_where():
 
 def cmd_status():
     conv, node = position()
-    print(f"Profile: {profile_label()}")
-    print(f"Save: {os.path.relpath(SAVE, PROJ)}")
+    print(f"档案: {profile_label()}")
+    print(f"存档: {os.path.relpath(SAVE, PROJ)}")
     print(f"位置: conv {conv} · node {node}")
     if os.path.exists(SAVE):
         c = save()
@@ -1609,8 +1587,8 @@ def cmd_status():
         print("属性: " + " / ".join(f"{k} {v}" for k, v in attrs.items()))
         vit = load_vitality(c)
         clock = load_clock(c)
-        print(f"血量: 🧠 Morale {vit['morale_cur']}/{vit['morale_max']} · ❤️ Health {vit['health_cur']}/{vit['health_max']}")
-        print(f"时间: 🕐 Day {clock['day']} · {clock['minute']//60:02d}:{clock['minute']%60:02d}")
+        print(f"血量: 🧠 士气 {vit['morale_cur']}/{vit['morale_max']} · ❤️ 生命 {vit['health_cur']}/{vit['health_max']}")
+        print(f"时间: 🕐 第 {clock['day']} 天 · {clock['minute']//60:02d}:{clock['minute']%60:02d}")
         # world-state summary. vars is ~10k (seeded from ROM) — summarise, never dump.
         n_total = c.execute("SELECT COUNT(*) FROM vars").fetchone()[0]
         true_vars = [r[0] for r in c.execute("SELECT name FROM vars WHERE value='True' ORDER BY name")]
@@ -1630,7 +1608,7 @@ def cmd_time(args):
     c = save()
     try:
         clock = load_clock(c)
-        def fmt(cl): return f"Day {cl['day']} · {cl['minute']//60:02d}:{cl['minute']%60:02d}"
+        def fmt(cl): return f"第 {cl['day']} 天 · {cl['minute']//60:02d}:{cl['minute']%60:02d}"
         if sub in ("show", "status"):
             print(f"🕐 {fmt(clock)}")
         elif sub == "set":
@@ -1665,10 +1643,10 @@ def cmd_time(args):
         c.close()
 
 def cmd_profile():
-    print(f"Profile: {profile_label()}")
-    print(f"Save: {os.path.relpath(SAVE, PROJ)}")
+    print(f"档案: {profile_label()}")
+    print(f"存档: {os.path.relpath(SAVE, PROJ)}")
     if PROFILE.get("wall"):
-        print(f"Wall: {PROFILE['wall']}")
+        print(f"记录墙: {PROFILE['wall']}")
     attrs = PROFILE["attrs"]
     print("属性: " + " / ".join(f"{k} {v}" for k, v in attrs.items()))
     if PROFILE.get("signature_skill"):
@@ -1698,9 +1676,9 @@ def cmd_profiles():
             if fn.endswith(".json"):
                 names.append(fn[:-5])
     if not names:
-        print("没有 profiles。")
+        print("没有档案。")
         return
-    print("可用 profiles:")
+    print("可用档案：")
     for name in names:
         marker = "*" if name == PROFILE_NAME else " "
         try:
@@ -1729,7 +1707,7 @@ def cmd_inventory():
 
 def cmd_equip(item_id):
     if not os.path.exists(SAVE):
-        print(f"房间是空的。先: room.py --profile {PROFILE_NAME} start <conv>")
+        print(f"房间是空的。先: disco-room --profile {PROFILE_NAME} start <conv>")
         return
     c = save()
     inv = load_inventory(c)
@@ -1741,7 +1719,7 @@ def cmd_equip(item_id):
 
 def cmd_unequip(item_id):
     if not os.path.exists(SAVE):
-        print(f"房间是空的。先: room.py --profile {PROFILE_NAME} start <conv>")
+        print(f"房间是空的。先: disco-room --profile {PROFILE_NAME} start <conv>")
         return
     c = save()
     inv = load_inventory(c)
@@ -1782,7 +1760,7 @@ def cmd_cabinet():
 
 def cmd_internalize(thought_id):
     if not os.path.exists(SAVE):
-        print(f"房间是空的。先: room.py --profile {PROFILE_NAME} start <conv>"); return
+        print(f"房间是空的。先: disco-room --profile {PROFILE_NAME} start <conv>"); return
     c = save()
     vars = load_vars(c)
     fixed, _, slots = _cabinet_view(c)
@@ -1800,7 +1778,7 @@ def cmd_internalize(thought_id):
 
 def cmd_forget(thought_id):
     if not os.path.exists(SAVE):
-        print(f"房间是空的。先: room.py --profile {PROFILE_NAME} start <conv>"); return
+        print(f"房间是空的。先: disco-room --profile {PROFILE_NAME} start <conv>"); return
     c = save()
     vars = load_vars(c)
     present_key = f"THP.{thought_id}"
@@ -1815,10 +1793,53 @@ def cmd_forget(thought_id):
     c.commit(); c.close()
     print(f"遗忘：{thought_id}（槽位释放）")
 
+_HELP_TEXT = """迪斯科房间引擎 · 命令一览
+
+用法：
+  disco-room --project <内容项目> --profile <档案> <命令> [参数]
+
+对话与场景：
+  start <conv> [node]   推门进入一段对话
+  beat                  看这一拍：NPC 台词 + 我的选项
+  choose <N>            选择第 N 个对话选项
+  leave                 结束当前对话，回到场景菜单
+  scene [id]            查看当前场景，或进入指定场景
+  look <N>              在场景里查看 / 进入第 N 项（look <N>! 强制离开对话）
+
+状态查询：
+  where                 当前位置与最近几步
+  status                档案、存档、血量、时间、世界状态
+  time [子命令]         世界时钟：show · set <天> <时> · advance <时> · next-day
+
+档案与随身：
+  profile / card        当前档案 / 侦探卡（属性与技能）
+  profiles              列出所有可用档案
+  inv (inventory)       随身物品
+  equip / unequip <id>  装备 / 卸下物品
+  cabinet (thoughts)    思维内阁
+  internalize <id>      内化一个念头
+  forget <id>           遗忘一个念头
+
+开发者与维护：
+  coverage              场景策展候选（开发者工具，不是自动导航）
+  reset                 清空当前档案的存档
+
+也可用环境变量指定：DISCO_ROOM_PROJECT · DISCO_ROOM_ROM · DISCO_ROOM_PROFILES ·
+DISCO_ROOM_DEFAULT_PROFILE · DISCO_PROFILE。详见 README.md 与 docs/。
+"""
+
+
+def cmd_help():
+    print(_HELP_TEXT)
+
+
 def main():
     profile_name, args = parse_cli(sys.argv)
-    configure_profile(profile_name)
     cmd = args[0] if args else "where"
+    if cmd in ("help", "-h", "--help"):
+        cmd_help()
+        return
+    configure_profile(profile_name)
     required = {
         "start": "start <conv> [node]",
         "choose": "choose <N>",
@@ -1873,7 +1894,10 @@ def main():
     elif cmd == "internalize": cmd_internalize(args[1])
     elif cmd == "forget":   cmd_forget(args[1])
     elif cmd == "reset": os.path.exists(SAVE) and os.remove(SAVE); print("房间已清空")
-    else: print(__doc__)
+    else:
+        print(f"未知命令：{cmd}")
+        print()
+        cmd_help()
 
 if __name__ == "__main__":
     main()

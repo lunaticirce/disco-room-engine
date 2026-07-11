@@ -31,7 +31,9 @@ class PublicEngineTests(unittest.TestCase):
         cls.tmp = tempfile.TemporaryDirectory()
         cls.project = Path(cls.tmp.name) / "minimal"
         shutil.copytree(ROOT / "examples" / "minimal", cls.project)
-        load_example_builder().build_rom(cls.project / "data" / "disco-rom.db")
+        rom_path = cls.project / "data" / "disco-rom.db"
+        rom_path.unlink(missing_ok=True)
+        load_example_builder().build_rom(rom_path)
 
     @classmethod
     def tearDownClass(cls):
@@ -136,6 +138,53 @@ class PublicEngineTests(unittest.TestCase):
         )
         self.assertIn("The lamp hums over a notebook", result.stdout)
         self.assertIn("Open the notebook.", result.stdout)
+
+    def test_coverage_runs_from_packaged_cli(self):
+        room.init_save(1, node=1)
+        env = os.environ.copy()
+        env["PYTHONPATH"] = str(SRC)
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "disco_room",
+                "--project",
+                str(self.project),
+                "--profile",
+                "demo",
+                "coverage",
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+            env=env,
+        )
+        self.assertIn("〔coverage", result.stdout)
+        self.assertIn("没有活跃任务", result.stdout)
+
+    def test_help_command_prints_chinese_help(self):
+        env = os.environ.copy()
+        env["PYTHONPATH"] = str(SRC)
+        for key in ("DISCO_ROOM_PROJECT", "DISCO_ROOM_PROFILES", "DISCO_PROFILE"):
+            env.pop(key, None)
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "disco_room",
+                "help",
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+            env=env,
+            cwd=self.tmp.name,
+        )
+        self.assertIn("命令一览", result.stdout)
+        self.assertIn("start", result.stdout)
+        # the old private-engine docstring must not leak into help output
+        self.assertNotIn("SAVE :", result.stdout)
+        self.assertNotIn("community-extracted game logic", result.stdout)
 
     def test_profile_example_is_relative_and_synthetic(self):
         import json
