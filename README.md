@@ -8,6 +8,8 @@
 
 ## 安装
 
+需要 Python ≥3.10。
+
 ```sh
 python3 -m pip install -e .
 ```

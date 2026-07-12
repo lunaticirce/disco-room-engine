@@ -1563,9 +1563,13 @@ def cmd_start(conv, announce=True, node=None):
     home = scenes.home_scene_for(conv, preferred=current_scene)
     if home and scenes.current_scene_id() != home:
         scenes.set_scene(home)
+    no_scene_stretch = home is None and current_scene is None
     if announce:
         where = f"conv {conv}" if requested_node is None else f"conv {conv} · node {requested_node}"
-        print(f"{profile_label()} 推门进入 {where}。\n")
+        print(f"{profile_label()} 推门进入 {where}。")
+        if no_scene_stretch:
+            print("（这一段没有房间菜单——顺着 `beat` / `choose` 往前走。）")
+        print()
     cmd_beat()
 
 def cmd_where():

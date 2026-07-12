@@ -156,6 +156,38 @@ class PublicEngineTests(unittest.TestCase):
         )
         self.assertIn("The lamp hums over a notebook", result.stdout)
         self.assertIn("Open the notebook.", result.stdout)
+        self.assertNotIn("没有房间菜单", result.stdout)  # has a home scene → no nav hint
+
+    def test_no_scene_conversation_prints_navigation_hint(self):
+        # A conversation no scene lists (like the curated opening dream) should
+        # print the one-time navigation hint on entry. Restore the scene after
+        # so other tests in the class still see it.
+        scene_path = self.project / "scenes" / "borrowed_room.json"
+        saved = scene_path.read_text(encoding="utf-8")
+        try:
+            scene_path.unlink()
+            env = os.environ.copy()
+            env["PYTHONPATH"] = str(SRC)
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "disco_room",
+                    "--project",
+                    str(self.project),
+                    "--profile",
+                    "demo",
+                    "start",
+                    "1",
+                ],
+                check=True,
+                capture_output=True,
+                text=True,
+                env=env,
+            )
+            self.assertIn("没有房间菜单", result.stdout)
+        finally:
+            scene_path.write_text(saved, encoding="utf-8")
 
     def test_coverage_runs_from_packaged_cli(self):
         room.init_save(1, node=1)

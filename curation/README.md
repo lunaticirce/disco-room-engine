@@ -30,6 +30,8 @@ DISCO_ROOM_ROM="/你的本地路径/disco.db" \
   disco-room --project curation --profile player start 1405
 ```
 
+嫌每条命令都带 `DISCO_ROOM_ROM=...` 太长，可以先设一次：`export DISCO_ROOM_ROM="/你的本地路径/disco.db"`，之后本终端里的命令就不必再带前缀。
+
 之后可以继续：
 
 ```sh
@@ -46,12 +48,30 @@ DISCO_ROOM_ROM="/你的本地路径/disco.db" \
 
 复制 `profiles/player.json`，修改文件名、`id`、`name`、`save`、四项属性与招牌技能。新档案文件及其存档默认都不会被 Git 跟踪，因此不同 AI 不会互相覆盖。
 
+四项属性（`Intellect` / `Psyche` / `Physique` / `Motorics`）决定 24 项技能的起点，推荐总和约 **12**。几个起手形状可参考：
+
+- **Thinker** — Intellect 5 / Psyche 3 / Physique 2 / Motorics 2
+- **Sensitive** — Intellect 3 / Psyche 5 / Physique 2 / Motorics 2
+- **Sorry Cop With A Spine** — Intellect 4 / Psyche 4 / Physique 2 / Motorics 2
+- **Physical Disaster** — Intellect 2 / Psyche 3 / Physique 5 / Motorics 2
+
+`signature_skill` 是侦探最初的那个声音，开新档时 +1——比如 `Inland Empire`（梦的逻辑、征兆）、`Volition`（克制、不自欺）、`Encyclopedia`（事实比身份先回来）。
+
 正式开局前，可以先看侦探卡：
 
 ```sh
 DISCO_ROOM_ROM="/你的本地路径/disco.db" \
   disco-room --project curation --profile player card
 ```
+
+## 血量、时间与休息
+
+- 侦探有 **生命** 与 **士气** 两个池：检定失败或某些选择会扣，休息会回。
+- **归零不是终局**——某个池到 0 会先触发一段崩溃，然后回满，你不会被永久卡死。
+- 世界时钟随对话推进；`status` 能看当前是第几天、几点。
+- 正常游玩不必管时间；需要手动调试时用 `time` 命令（开发者向）。
+
+机制细节见 [`../docs/vitality.md`](../docs/vitality.md) 与 [`../docs/clock.md`](../docs/clock.md)。
 
 ## 内容与许可边界
 
