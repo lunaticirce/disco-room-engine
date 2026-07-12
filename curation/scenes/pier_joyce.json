@@ -1,0 +1,38 @@
+{
+  "id": "pier_joyce",
+  "name": "Martinaise 码头 · Wild Pines 船边",
+  "blurb": "港口外的水面晃着冷光。Wild Pines 的代表在船上等着，罢工、雇佣兵和公司利益都从这里伸出一条线。",
+  "home_convs": [
+    765,
+    744,
+    759
+  ],
+  "points": [
+    {
+      "label": "船上的 Wild Pines 代表",
+      "conv": 765,
+      "show_when": "(Variable[\"TASK.interview_wild_pines_rep\"] == true and Variable[\"TASK.interview_wild_pines_rep_done\"] == false) or Variable[\"pier.joyce_met\"] == true"
+    }
+  ],
+  "exits": [
+    {
+      "label": "去环岛盘问货车司机",
+      "to": "roundabout_jam",
+      "show_when": "Variable[\"TASK.probe_drivers_about_drugs\"] == true and Variable[\"TASK.probe_drivers_about_drugs_done\"] == false"
+    },
+    {
+      "label": "沿海岸去渔村",
+      "to": "fishing_village",
+      "show_when": "(Variable[\"TASK.begin_with_fisherfolk\"] == true and Variable[\"TASK.begin_with_fisherfolk_done\"] == false) or (Variable[\"TASK.ask_about_ruby_in_village\"] == true and Variable[\"TASK.ask_about_ruby_in_village_done\"] == false) or (Variable[\"TASK.ruby_not_village_explore_peninsula\"] == true and Variable[\"TASK.ruby_not_village_explore_peninsula_done\"] == false) or Variable[\"village.ww_greeting_done\"] == true or Variable[\"whirling.lena_husband_across_water_lock\"] == true or Variable[\"TASK.locate_morell\"] == true"
+    },
+    {
+      "label": "去小艇边准备前往海堡",
+      "to": "motor_skiff",
+      "show_when": "Variable[\"TASK.use_boat\"] == true and Variable[\"TASK.use_boat_done\"] == false"
+    },
+    {
+      "label": "回 Whirling-in-Rags",
+      "to": "whirling_ground_floor"
+    }
+  ]
+}

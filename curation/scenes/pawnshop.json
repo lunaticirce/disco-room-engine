@@ -1,0 +1,27 @@
+{
+  "id": "pawnshop",
+  "name": "Martinaise 当铺",
+  "blurb": "玻璃柜、旧电器和一排会吞磁带的机器。你需要让那盘 Doorgunner Megamix 发出声音。",
+  "home_convs": [
+    713,
+    725
+  ],
+  "points": [
+    {
+      "label": "货架上的 boombox",
+      "conv": 725,
+      "show_when": "Variable[\"TASK.listen_to_merc_tape\"] == true and Variable[\"TASK.listen_to_merc_tape_done\"] == false and CheckItem(\"boombox\") == false",
+      "done_when": "CheckItem(\"boombox\")"
+    },
+    {
+      "label": "柜台后的 Roy",
+      "conv": 713
+    }
+  ],
+  "exits": [
+    {
+      "label": "回 Whirling-in-Rags",
+      "to": "whirling_ground_floor"
+    }
+  ]
+}

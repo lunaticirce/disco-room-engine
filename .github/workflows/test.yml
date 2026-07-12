@@ -25,6 +25,10 @@ jobs:
       - name: Test
         run: python -m unittest discover -s tests -v
       - name: Compile
-        run: python -m compileall -q src tests examples
+        run: python -m compileall -q src tests examples tools
+      - name: Audit curation
+        run: python tools/curation.py audit curation
       - name: Build wheel
         run: python -m pip wheel . --no-deps --wheel-dir dist
+      - name: Audit wheel boundary
+        run: python tools/curation.py audit-wheel dist/*.whl

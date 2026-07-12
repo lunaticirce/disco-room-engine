@@ -832,6 +832,10 @@ def val_str(v):
 
 def init_save(conv, node=None):
     fresh = not os.path.exists(SAVE)
+    if fresh:
+        parent = os.path.dirname(SAVE)
+        if parent:
+            os.makedirs(parent, exist_ok=True)
     c = save()
     if fresh:
         c.executescript("""

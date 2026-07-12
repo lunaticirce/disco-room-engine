@@ -1,0 +1,23 @@
+{
+  "id": "whirling_balcony",
+  "name": "Whirling 二楼阳台",
+  "blurb": "推门出到阳台。冷风灌进来，楼下的声音隐隐传上来。那只被自己甩飞的鞋，应该就在这附近的什么地方。",
+  "points": [
+    {
+      "label": "找那只飞出去的鞋",
+      "conv": 236,
+      "done_when": "Variable[\"whirling.orb_shoe_found_done\"]"
+    },
+    {
+      "label": "阳台上抽烟的那个人",
+      "conv": 519,
+      "done_when": "Variable[\"TASK.talk_to_smoker_again\"]"
+    }
+  ],
+  "exits": [
+    {
+      "label": "回走廊",
+      "to": "whirling_hallway"
+    }
+  ]
+}

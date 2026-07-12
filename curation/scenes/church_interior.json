@@ -1,0 +1,23 @@
+{
+  "id": "church_interior",
+  "name": "那栋封死的楼 · 内部",
+  "blurb": "高穹顶、冷、回声。一扇裂开的彩色玻璃窗投下惨白的光。角落里摆着键盘和一台机器。",
+  "home_convs": [],
+  "points": [
+    {
+      "label": "那扇裂开的彩色玻璃窗",
+      "conv": 183
+    },
+    {
+      "label": "角落里趴在键盘前的女人",
+      "conv": 182,
+      "show_when": "Variable[\"church.soona_evicted\"] == false"
+    }
+  ],
+  "exits": [
+    {
+      "label": "出门回冰面",
+      "to": "south_coast"
+    }
+  ]
+}

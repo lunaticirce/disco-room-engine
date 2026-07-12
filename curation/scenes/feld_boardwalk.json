@@ -1,0 +1,48 @@
+{
+  "id": "feld_boardwalk",
+  "name": "木板道 · Feld 壁画",
+  "blurb": "海风从废弃建筑的裂口里穿过，剥落的旧标语还留在墙面上。继续找 Ruby，就得从这里开始把半岛一块块翻过去。",
+  "home_convs": [
+    542,
+    544,
+    1237,
+    1238
+  ],
+  "points": [
+    {
+      "label": "褪色的 Feld 壁画",
+      "conv": 1237,
+      "show_when": "Variable[\"TASK.ruby_not_village_explore_peninsula\"] == true or Variable[\"TASK.inspect_mural\"] == true or Variable[\"TASK.ask_about_ruby_in_village_done\"] == true"
+    },
+    {
+      "label": "标语旁的锈梯",
+      "conv": 1238,
+      "show_when": "Variable[\"TASK.locate_ruby_on_the_coast\"] == true and Variable[\"TASK.locate_ruby_on_the_coast_done\"] == false and Variable[\"TASK.climb_ladder_done\"] == false"
+    },
+    {
+      "label": "木板道下的排水管",
+      "conv": 544,
+      "show_when": "Variable[\"TASK.locate_ruby_on_the_coast\"] == true and Variable[\"TASK.locate_ruby_on_the_coast_done\"] == false and Variable[\"TASK.explore_the_passages\"] == false"
+    },
+    {
+      "label": "从里面给 Kim 打开维修门",
+      "conv": 542,
+      "show_when": "Variable[\"TASK.go_down_get_kim\"] == true and Variable[\"TASK.go_down_get_kim_done\"] == false"
+    }
+  ],
+  "exits": [
+    {
+      "label": "进入 Feld 楼下的黑暗通道",
+      "to": "feld_passages",
+      "show_when": "(Variable[\"TASK.explore_the_passages\"] == true and Variable[\"TASK.explore_the_passages_done\"] == false) or (Variable[\"TASK.enter_cavern\"] == true and Variable[\"TASK.enter_cavern_done\"] == false) or (Variable[\"TASK.search_tent\"] == true and Variable[\"TASK.search_tent_done\"] == false) or (Variable[\"TASK.read_ruby_journal\"] == true and Variable[\"TASK.read_ruby_journal_done\"] == false)"
+    },
+    {
+      "label": "回渔村",
+      "to": "fishing_village"
+    },
+    {
+      "label": "回 Whirling-in-Rags",
+      "to": "whirling_ground_floor"
+    }
+  ]
+}

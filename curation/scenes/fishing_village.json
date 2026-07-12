@@ -1,0 +1,76 @@
+{
+  "id": "fishing_village",
+  "name": "西海岸 · 渔村",
+  "blurb": "水闸另一侧，低矮的水泥房和渔网挤在海风里。咸腥味、晾衣绳，远处是一片更荒的半岛。",
+  "home_convs": [
+    172,
+    415,
+    417,
+    563,
+    837,
+    845,
+    849
+  ],
+  "points": [
+    {
+      "label": "洗衣盆边的老妇人",
+      "conv": 563
+    },
+    {
+      "label": "码头边的捕鱼女",
+      "conv": 837,
+      "show_when": "Variable[\"TASK.ask_about_ruby_in_village\"] == true or Variable[\"village.ww_greeting_done\"] == true or Variable[\"village.netpicker_greeting_done\"] == true"
+    },
+    {
+      "label": "屋里的小女孩",
+      "conv": 845,
+      "show_when": "Variable[\"TASK.ask_about_ruby_in_village\"] == true or Variable[\"village.netpicker_greeting_done\"] == true"
+    },
+    {
+      "label": "水边的双胞胎",
+      "conv": 849,
+      "show_when": "Variable[\"TASK.ask_about_ruby_in_village\"] == true or Variable[\"village.netpicker_greeting_done\"] == true"
+    },
+    {
+      "label": "长椅边的酒鬼们",
+      "conv": 417,
+      "show_when": "Variable[\"TASK.ask_about_ruby_in_village\"] == true or Variable[\"village.idiot_greeting_done\"] == true or Variable[\"village.abigail_greeting_done\"] == true"
+    },
+    {
+      "label": "借住的棚屋",
+      "conv": 172,
+      "show_when": "CheckItem(\"key_coast_home\") == true and Variable[\"TASK.washerwoman_hiding_something\"] == true and Variable[\"TASK.washerwoman_hiding_something_done\"] == false",
+      "done_when": "Variable[\"TASK.washerwoman_hiding_something_done\"]"
+    }
+  ],
+  "exits": [
+    {
+      "label": "沿木板道去 Feld 壁画",
+      "to": "feld_boardwalk",
+      "show_when": "Variable[\"TASK.ruby_not_village_explore_peninsula\"] == true or Variable[\"TASK.inspect_mural\"] == true or Variable[\"TASK.ask_about_ruby_in_village_done\"] == true"
+    },
+    {
+      "label": "沿海岸回 Joyce 的船边",
+      "to": "pier_joyce"
+    },
+    {
+      "label": "沿海南行去芦苇荡",
+      "to": "west_coast"
+    },
+    {
+      "label": "去小艇边准备前往海堡",
+      "to": "motor_skiff",
+      "show_when": "Variable[\"TASK.use_boat\"] == true and Variable[\"TASK.use_boat_done\"] == false"
+    },
+    {
+      "label": "立刻穿过水闸赶回 Whirling-in-Rags",
+      "to": "whirling_ground_floor",
+      "show_when": "Variable[\"TASK.return_to_whirling\"] == true and Variable[\"TASK.return_to_whirling_done\"] == false"
+    },
+    {
+      "label": "穿过水闸回 Whirling-in-Rags",
+      "to": "whirling_ground_floor",
+      "show_when": "Variable[\"TASK.return_to_whirling\"] == false or Variable[\"TASK.return_to_whirling_done\"] == true"
+    }
+  ]
+}

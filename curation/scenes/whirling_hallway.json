@@ -1,0 +1,65 @@
+{
+  "id": "whirling_hallway",
+  "name": "Whirling 二楼走廊",
+  "blurb": "推门出来，那间砸烂的房在身后合上了。二楼走廊昏暗、有霉味，几扇紧闭的门一字排开；尽头一架楼梯向下，沉进更深的暗里。楼下是食堂，是 Garte，是那笔没付的房费——再往外，就是案发现场。楼梯向下，案子在那底下等着。",
+  "home_convs": [
+    683,
+    1239,
+    1245,
+    1257,
+    1258,
+    1264,
+    1266
+  ],
+  "points": [
+    {
+      "label": "走廊里抽烟的那个女人",
+      "conv": 677,
+      "show_when": "Variable[\"whirling.klaasjeone_greeting_done\"] == false",
+      "done_when": "Variable[\"whirling.klaasjeone_greeting_done\"]"
+    },
+    {
+      "label": "3 号房——检查 Klaasje 留下的窗线索",
+      "conv": 1245,
+      "show_when": "(Variable[\"whirling.klaasje_viscal_see_window_hint\"] == true or Variable[\"TASK.inspect_window\"] == true) and Variable[\"TASK.inspect_window_done\"] == false",
+      "done_when": "Variable[\"TASK.inspect_window_done\"] == true"
+    },
+    {
+      "label": "3 号房门（Klaasje Amandou）",
+      "conv": 683,
+      "show_when": "Variable[\"whirling.klaasjeone_greeting_done\"] == true and Variable[\"whirling.klaasje_exit_to_room\"] == true and Variable[\"whirling.klaasjedoor_opened\"] == false",
+      "done_when": "Variable[\"whirling.klaasjedoor_opened\"]"
+    },
+    {
+      "label": "上楼到屋顶见 Klaasje",
+      "conv": 1239,
+      "show_when": "Variable[\"whirling.klaasjedoor_opened\"] and Variable[\"TASK.interrogate_klaasje_done\"] == false and Variable[\"TASK.arrest_klaasje_done\"] == false"
+    },
+    {
+      "label": "上楼找 Klaasje 谈 Doorgunner 磁带",
+      "conv": 1258,
+      "show_when": "Variable[\"TASK.talk_to_klaasje_tape\"] == true and Variable[\"TASK.talk_to_klaasje_tape_done\"] == false",
+      "done_when": "Variable[\"TASK.talk_to_klaasje_tape_done\"] or Variable[\"TASK.arrest_klaasje_done\"]"
+    },
+    {
+      "label": "上楼找 Klaasje 对质完整故事",
+      "conv": 1264,
+      "show_when": "Variable[\"TASK.confront_klaasje_with_full_story\"] == true and Variable[\"TASK.confront_klaasje_with_full_story_done\"] == false",
+      "done_when": "Variable[\"TASK.confront_klaasje_with_full_story_done\"] or Variable[\"TASK.arrest_klaasje_done\"]"
+    }
+  ],
+  "exits": [
+    {
+      "label": "回房间",
+      "to": "whirling_f2_room"
+    },
+    {
+      "label": "去阳台",
+      "to": "whirling_balcony"
+    },
+    {
+      "label": "下楼梯，去一楼",
+      "to": "whirling_ground_floor"
+    }
+  ]
+}

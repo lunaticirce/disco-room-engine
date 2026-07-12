@@ -1,0 +1,230 @@
+{
+  "id": "whirling_ground_floor",
+  "name": "Whirling 一楼 · 食堂",
+  "blurb": "木楼梯下到底。食堂里：油烟味、廉价咖啡、有人压低嗓子说话。柜台、楼梯、后门和前门把案子的线索分成几条路。",
+  "home_convs": [
+    220,
+    403,
+    470,
+    517,
+    521,
+    700,
+    1001,
+    1002,
+    1012,
+    1020,
+    1021,
+    1263,
+    1370,
+    859,
+    860,
+    862,
+    864,
+    868,
+    393
+  ],
+  "points": [
+    {
+      "label": "柜台后的 Garte",
+      "conv": 1275,
+      "done_when": "Variable[\"whirling.garte_altgreeting_done\"]"
+    },
+    {
+      "label": "橙夹克男人（Kim Kitsuragi）",
+      "conv": 994,
+      "done_when": "Variable[\"whirling.kimintro_done\"]"
+    },
+    {
+      "label": "桌边坐轮椅的女士",
+      "conv": 469,
+      "show_when": "Variable[\"whirling.lena_intro_done\"] == false",
+      "done_when": "Variable[\"whirling.lena_intro_done\"]"
+    },
+    {
+      "label": "回去找 Lena（轮椅女士）",
+      "conv": 470,
+      "show_when": "Variable[\"whirling.lena_intro_done\"] == true"
+    },
+    {
+      "label": "趴在桌上睡的码头工人",
+      "conv": 621,
+      "show_when": "Variable[\"whirling.sleeper_greeting_done\"] == false",
+      "done_when": "Variable[\"whirling.sleeper_greeting_done\"]"
+    },
+    {
+      "label": "前门旁边那块石头",
+      "conv": 521,
+      "show_when": "Variable[\"backyard.smoker_suggestion_redcheck_success\"]",
+      "done_when": "Variable[\"backyard.stone_found_key\"]"
+    },
+    {
+      "label": "去后院——尸体已经放下",
+      "conv": 700,
+      "show_when": "Variable[\"yard.hanged_shot_body_down\"] == true or Variable[\"gates.mhead_took_down_the_hanged_man\"] == true",
+      "done_when": "Variable[\"TASK.send_corpse_to_processing_done\"]"
+    },
+    {
+      "label": "去后院——树上的尸体",
+      "conv": 705,
+      "show_when": "Variable[\"yard.hanged_shot_body_down\"] == false and Variable[\"gates.mhead_took_down_the_hanged_man\"] == false",
+      "done_when": "Variable[\"TASK.send_corpse_to_processing_done\"]"
+    },
+    {
+      "label": "门外的 Coupris Kineema（你的车）",
+      "conv": 460,
+      "show_when": "Variable[\"whirling.kimintro_done\"] == true and Variable[\"plaza.kineema_intro_done\"] == false",
+      "done_when": "Variable[\"plaza.kineema_intro_done\"]"
+    },
+    {
+      "label": "后院的园丁",
+      "conv": 1135,
+      "show_when": "Variable[\"yard.hanged_seen\"] == true and Variable[\"TASK.send_corpse_to_processing_done\"] == false",
+      "done_when": "Variable[\"TASK.send_corpse_to_processing_done\"]"
+    },
+    {
+      "label": "后院里那个粗野的小男孩（Cuno）",
+      "conv": 860,
+      "show_when": "Variable[\"yard.hanged_seen\"] == true"
+    },
+    {
+      "label": "后院那堆 eternite（石棉屋顶材料）",
+      "conv": 220,
+      "show_when": "Variable[\"yard.hanged_seen\"] == true",
+      "done_when": "Variable[\"yard.cuno_been_opened_the_shack_door\"] == true"
+    },
+    {
+      "label": "后院温室后的地下室门",
+      "conv": 403,
+      "show_when": "Variable[\"TASK.open_gary_door\"] == true and Variable[\"TASK.open_gary_door_done\"] == false",
+      "done_when": "Variable[\"backyard.gary_door_unlocked\"] == true or Variable[\"TASK.unlock_the_weasle_door_done\"] == true"
+    },
+    {
+      "label": "地下室公寓里的殖民地杯具收藏",
+      "conv": 393,
+      "show_when": "Variable[\"backyard.gary_door_unlocked\"] == true or Variable[\"TASK.unlock_the_weasle_door_done\"] == true"
+    },
+    {
+      "label": "包厢前的工会律师 Liz",
+      "conv": 1001,
+      "show_when": "(Variable[\"cargo.evrart_hardieboys_did_the_merco_in\"] == true or Variable[\"pier.joyce_lynching_story_told\"] == true or Variable[\"TASK.talk_merc_tattoo\"] == true) and Variable[\"whirling.fixer_said_goodbye_once\"] == false and Variable[\"whirling.hardie_hub_reached\"] == false",
+      "done_when": "Variable[\"whirling.fixer_said_goodbye_once\"] == true or Variable[\"whirling.hardie_hub_reached\"] == true"
+    },
+    {
+      "label": "包厢里的 Titus Hardie 和他的 boys",
+      "conv": 1002,
+      "node": 15,
+      "show_when": "(Variable[\"cargo.evrart_hardieboys_did_the_merco_in\"] == true or Variable[\"pier.joyce_lynching_story_told\"] == true or Variable[\"TASK.talk_merc_tattoo\"] == true) and Variable[\"whirling.hardie_hub_reached\"] == false and Variable[\"whirling.fixer_said_goodbye_once\"] == true",
+      "done_when": "Variable[\"whirling.hardie_hub_reached\"] == true"
+    },
+    {
+      "label": "包厢里的 Titus Hardie 和他的 boys",
+      "conv": 1002,
+      "node": 12,
+      "show_when": "Variable[\"whirling.hardie_hub_reached\"] == true and Variable[\"TASK.interrogate_klaasje\"] == false and Variable[\"TASK.interrogate_klaasje_done\"] == false"
+    },
+    {
+      "label": "和 Kim 低声复盘 Klaasje",
+      "conv": 1263,
+      "show_when": "Variable[\"kimswitch.klaasje_rape_talked_of_kim_wants_to_discuss\"]",
+      "done_when": "Variable[\"TASK.confront_the_hardie_boys_with_what_klaasje_told_you_done\"]"
+    },
+    {
+      "label": "回包厢找 Hardie boys 对质",
+      "conv": 1002,
+      "node": 12,
+      "show_when": "Variable[\"TASK.confront_the_hardie_boys_with_what_klaasje_told_you\"] and Variable[\"TASK.confront_the_hardie_boys_with_what_klaasje_told_you_done\"] == false"
+    },
+    {
+      "label": "回包厢找 Titus 谈 Doorgunner 录音",
+      "conv": 1014,
+      "show_when": "Variable[\"TASK.talk_to_titus_about_the_doorgunner_megamix\"] == true and Variable[\"TASK.talk_to_titus_about_the_doorgunner_megamix_done\"] == false",
+      "done_when": "Variable[\"TASK.talk_to_titus_about_the_doorgunner_megamix_done\"]"
+    },
+    {
+      "label": "回包厢找 Titus 追问 Ruby",
+      "conv": 1025,
+      "show_when": "Variable[\"TASK.where_is_ruby\"] == true and Variable[\"TASK.where_is_ruby_done\"] == false",
+      "done_when": "Variable[\"TASK.where_is_ruby_done\"]"
+    },
+    {
+      "label": "回到 Whirling 门口介入 tribunal",
+      "conv": 1370,
+      "show_when": "Variable[\"TASK.return_to_whirling\"] == true and Variable[\"TASK.return_to_whirling_done\"] == false and Variable[\"TASK.report_to_the_tribunal_done\"] == false",
+      "done_when": "Variable[\"TASK.report_to_the_tribunal\"] == true or Variable[\"TASK.report_to_the_tribunal_done\"] == true"
+    },
+    {
+      "label": "在清理过的房间醒来",
+      "conv": 767,
+      "show_when": "Variable[\"TASK.report_to_the_tribunal\"] == true and Variable[\"TASK.report_to_the_tribunal_done\"] == false and IsKimHere()",
+      "done_when": "Variable[\"TASK.report_to_the_tribunal_done\"] == true"
+    },
+    {
+      "label": "在清理过的房间醒来",
+      "conv": 768,
+      "show_when": "Variable[\"TASK.report_to_the_tribunal\"] == true and Variable[\"TASK.report_to_the_tribunal_done\"] == false and IsKimHere() == false",
+      "done_when": "Variable[\"TASK.report_to_the_tribunal_done\"] == true"
+    }
+  ],
+  "exits": [
+    {
+      "label": "上楼去 3 号房找 Klaasje",
+      "to": "whirling_hallway",
+      "show_when": "Variable[\"TASK.interrogate_klaasje\"] and Variable[\"TASK.interrogate_klaasje_done\"] == false and Variable[\"kimswitch.klaasje_rape_talked_of_kim_wants_to_discuss\"] == false"
+    },
+    {
+      "label": "上楼去二楼走廊",
+      "to": "whirling_hallway",
+      "show_when": "Variable[\"TASK.interrogate_klaasje\"] == false or Variable[\"TASK.interrogate_klaasje_done\"] == true or Variable[\"kimswitch.klaasje_rape_talked_of_kim_wants_to_discuss\"]"
+    },
+    {
+      "label": "出门去当铺找能播放磁带的机器",
+      "to": "pawnshop",
+      "show_when": "Variable[\"TASK.listen_to_merc_tape\"] == true and Variable[\"TASK.listen_to_merc_tape_done\"] == false and CheckItem(\"boombox\") == false"
+    },
+    {
+      "label": "出门去公寓楼找阳台抽烟人",
+      "to": "apartment_building",
+      "show_when": "(Variable[\"TASK.find_a_way_inside_apt_building\"] == true and Variable[\"TASK.find_a_way_inside_apt_building_done\"] == false) or (Variable[\"TASK.where_does_the_smoker_on_the_balcony_live\"] == true and Variable[\"TASK.where_does_the_smoker_on_the_balcony_live_done\"] == false) or (Variable[\"TASK.find_apartment_twenty_eight\"] == true and Variable[\"TASK.talk_to_smoker_again_done\"] == false)"
+    },
+    {
+      "label": "出门去码头找 Wild Pines 代表",
+      "to": "pier_joyce",
+      "show_when": "(Variable[\"TASK.interview_wild_pines_rep\"] == true and Variable[\"TASK.interview_wild_pines_rep_done\"] == false) or Variable[\"pier.joyce_met\"] == true"
+    },
+    {
+      "label": "出门去书店买 Martinaise 地图",
+      "to": "bookstore",
+      "show_when": "Variable[\"TASK.buy_a_map_of_martinaise\"] == true and Variable[\"TASK.buy_a_map_of_martinaise_done\"] == false and CheckItem(\"map_of_martinaise\") == false"
+    },
+    {
+      "label": "穿过水闸去对岸渔村",
+      "to": "fishing_village",
+      "show_when": "(Variable[\"TASK.begin_with_fisherfolk\"] == true and Variable[\"TASK.begin_with_fisherfolk_done\"] == false) or (Variable[\"TASK.ask_about_ruby_in_village\"] == true and Variable[\"TASK.ask_about_ruby_in_village_done\"] == false) or (Variable[\"TASK.ruby_not_village_explore_peninsula\"] == true and Variable[\"TASK.ruby_not_village_explore_peninsula_done\"] == false) or Variable[\"village.ww_greeting_done\"] == true or Variable[\"whirling.lena_husband_across_water_lock\"] == true or Variable[\"TASK.locate_morell\"] == true"
+    },
+    {
+      "label": "出门去芦苇丛检查浮标",
+      "to": "coast_reeds",
+      "show_when": "Variable[\"TASK.inspect_the_buoy\"] == true and Variable[\"TASK.inspect_the_buoy_done\"] == false"
+    },
+    {
+      "label": "出门去环岛盘问货车司机",
+      "to": "roundabout_jam",
+      "show_when": "Variable[\"TASK.probe_drivers_about_drugs\"] == true and Variable[\"TASK.probe_drivers_about_drugs_done\"] == false"
+    },
+    {
+      "label": "出门去港口大门",
+      "to": "harbour_gate",
+      "show_when": "Variable[\"whirling.kimintro_done\"]"
+    },
+    {
+      "label": "进 Cuno 的棚子看看",
+      "to": "cuno_shack",
+      "show_when": "Variable[\"yard.cuno_been_opened_the_shack_door\"] == true and (Variable[\"yard.shack_saw_the_locust_city\"] == false or Variable[\"backyard.shack_elchem_about_speed_done\"] == false)"
+    },
+    {
+      "label": "出门去木板路",
+      "to": "boardwalk",
+      "show_when": "Variable[\"whirling.kimintro_done\"]"
+    }
+  ]
+}

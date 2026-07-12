@@ -1,0 +1,61 @@
+{
+  "id": "apartment_building",
+  "name": "Martinaise 公寓楼",
+  "blurb": "西南入口后的楼道潮湿、狭窄，墙后传来住户的声音。这里能问到阳台抽烟人的门牌，也能继续往楼上找 28 号门。",
+  "home_convs": [
+    887,
+    888,
+    875,
+    881,
+    873,
+    877,
+    874
+  ],
+  "points": [
+    {
+      "label": "西南入口的金属门",
+      "conv": 887,
+      "show_when": "CheckItem(\"key_apartment_building\") == false and Variable[\"TASK.find_a_way_inside_apt_building\"] == true and Variable[\"TASK.find_a_way_inside_apt_building_done\"] == false",
+      "done_when": "Variable[\"TASK.find_a_way_inside_apt_building_done\"]"
+    },
+    {
+      "label": "楼道里的清洁女工",
+      "conv": 888,
+      "show_when": "CheckItem(\"key_apartment_building\") and Variable[\"TASK.where_does_the_smoker_on_the_balcony_live\"] == true and Variable[\"TASK.where_does_the_smoker_on_the_balcony_live_done\"] == false",
+      "done_when": "Variable[\"TASK.where_does_the_smoker_on_the_balcony_live_done\"]"
+    },
+    {
+      "label": "28 号金属门",
+      "conv": 875,
+      "show_when": "Variable[\"TASK.find_apartment_twenty_eight\"] == true and Variable[\"TASK.find_apartment_twenty_eight_done\"] == false and Variable[\"TASK.talk_to_smoker_again_done\"] == false and Variable[\"TASK.interview_the_sunday_friend_done\"] == false and (IsHourBetween(21,4) and DayCount() >= 2 and IsTaskActive(\"TASK.visit_the_smoker_on_the_balcony\")) == false",
+      "done_when": "Variable[\"TASK.talk_to_smoker_again_done\"]"
+    },
+    {
+      "label": "28 号门后的抽烟人",
+      "conv": 881,
+      "show_when": "Variable[\"TASK.find_apartment_twenty_eight\"] == true and Variable[\"TASK.find_apartment_twenty_eight_done\"] == false and Variable[\"TASK.talk_to_smoker_again_done\"] == false and Variable[\"TASK.interview_the_sunday_friend_done\"] == false and IsHourBetween(21,4) and DayCount() >= 2 and IsTaskActive(\"TASK.visit_the_smoker_on_the_balcony\")",
+      "done_when": "Variable[\"TASK.talk_to_smoker_again_done\"]",
+      "set_vars": {
+        "backyard.smoker_first_departure": 1
+      }
+    },
+    {
+      "label": "28 号房里的 Sunday friend",
+      "conv": 873,
+      "show_when": "Variable[\"TASK.interview_the_sunday_friend\"] == true and Variable[\"TASK.interview_the_sunday_friend_done\"] == false and Variable[\"TASK.interview_the_sunday_friend_cancelled\"] == false",
+      "done_when": "Variable[\"TASK.interview_the_sunday_friend_done\"] or Variable[\"TASK.interview_the_sunday_friend_cancelled\"]"
+    },
+    {
+      "label": "走廊尽头 · de Ruyter 家的门",
+      "conv": 877,
+      "show_when": "Variable[\"TASK.get_speed\"] == true or Variable[\"TASK.get_drugs_from_cunos_apartment\"] == true or Variable[\"TASK.retry_cuno_door\"] == true",
+      "done_when": "Variable[\"TASK.get_drugs_from_cunos_apartment_done\"]"
+    }
+  ],
+  "exits": [
+    {
+      "label": "回 Whirling-in-Rags",
+      "to": "whirling_ground_floor"
+    }
+  ]
+}

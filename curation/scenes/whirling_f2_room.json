@@ -1,0 +1,67 @@
+{
+  "id": "whirling_f2_room",
+  "name": "Whirling 客栈二楼 · 那间砸烂的房",
+  "blurb": "天花板一个停转的吊扇，浴室一面镜子，一只比你还脏的浴缸。海风从破窗灌进来。",
+  "points": [
+    {
+      "label": "天花板上的吊扇（领带）",
+      "conv": 1406,
+      "done_when": "Variable[\"whirling.fan_caught_the_tie\"]"
+    },
+    {
+      "label": "浴室的镜子",
+      "conv": 1407
+    },
+    {
+      "label": "浴缸（放水泡个澡）",
+      "conv": 1420,
+      "node": 18,
+      "repeat_heal": {
+        "health": 1
+      }
+    },
+    {
+      "label": "那扇破窗（窗外那具尸）",
+      "conv": 1418,
+      "show_when": "Variable[\"yard.hanged_shot_body_down\"] == false and Variable[\"gates.mhead_took_down_the_hanged_man\"] == false"
+    },
+    {
+      "label": "那扇破窗",
+      "conv": 1418,
+      "show_when": "Variable[\"yard.hanged_shot_body_down\"] == true or Variable[\"gates.mhead_took_down_the_hanged_man\"] == true"
+    },
+    {
+      "label": "Doorgunner Megamix 磁带",
+      "conv": 1419,
+      "show_when": "CheckItem(\"tape_lely\") and Variable[\"TASK.listen_to_merc_tape\"] == true and Variable[\"TASK.listen_to_merc_tape_done\"] == false",
+      "done_when": "Variable[\"inventory.doorgunner_megamixed_listened\"] or Variable[\"TASK.listen_to_merc_tape_done\"]"
+    },
+    {
+      "label": "那张床垫（睡到明早）",
+      "conv": 412,
+      "show_when": "IsHourBetween(21,4) and Variable[\"whirling.dreamtwo_open_case\"] == false",
+      "set_vars": {
+        "whirling.bed_day_1": 1
+      },
+      "advance": "morning"
+    },
+    {
+      "label": "那张床垫（睡到明早）",
+      "conv": 1202,
+      "show_when": "IsHourBetween(21,4) and Variable[\"whirling.dreamtwo_open_case\"] == true and Variable[\"whirling.dream_3_logic\"] == false",
+      "advance": "morning"
+    },
+    {
+      "label": "那张床垫（睡到明早）",
+      "conv": 1201,
+      "show_when": "IsHourBetween(21,4) and Variable[\"whirling.dream_3_logic\"] == true",
+      "advance": "morning"
+    }
+  ],
+  "exits": [
+    {
+      "label": "推门出去（走廊）",
+      "to": "whirling_hallway"
+    }
+  ]
+}

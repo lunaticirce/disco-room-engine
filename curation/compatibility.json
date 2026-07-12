@@ -1,0 +1,43 @@
+{
+  "party_variables": {
+    "kim": "whirling.kitsuragi_present",
+    "cuno": "whirling.cuno_accepted_to_party"
+  },
+  "hidden_player_lines": [
+    [
+      1315,
+      1023
+    ],
+    [
+      1315,
+      1024
+    ]
+  ],
+  "condition_replacements": {
+    "deserter_modifier_comp_nervous_system": "Variable[\"seafort.deserter_modifier_comp_nervous_system\"]",
+    "whirling_klaasje_body_mercenary": "Variable[\"whirling.klaasje_body_mercenary\"]"
+  },
+  "auto_equip_items": [
+    "prybar",
+    "kvalsund_multitool"
+  ],
+  "node_set_vars": {
+    "790:331": {
+      "jam.abandoned_window_broken": true
+    }
+  },
+  "state_repairs": [
+    {
+      "when": {
+        "TASK.search_through_the_locked_cabin_done": true,
+        "jam.abandoned_failed_smash_window": true
+      },
+      "unless": {
+        "jam.abandoned_window_broken": true
+      },
+      "set": {
+        "jam.abandoned_window_broken": true
+      }
+    }
+  ]
+}

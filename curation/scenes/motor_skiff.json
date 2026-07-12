@@ -1,0 +1,53 @@
+{
+  "id": "motor_skiff",
+  "name": "ROO A72 小艇",
+  "blurb": "黄色小艇在平静海面上轻轻起伏。油箱很小，发动机在等最后一下拉绳；一旦出发，就会离开 Martinaise 的岸。",
+  "home_convs": [
+    838,
+    639
+  ],
+  "points": [
+    {
+      "label": "乘小艇回到大陆岸边",
+      "conv": 639,
+      "show_when": "Variable[\"TASK.return_to_mainland\"] == true and Variable[\"TASK.return_to_mainland_done\"] == false and Variable[\"TASK.return_to_mainland_cancelled\"] == false",
+      "done_when": "Variable[\"TASK.return_to_mainland_done\"] == true or Variable[\"TASK.return_to_mainland_cancelled\"] == true"
+    },
+    {
+      "label": "坐上车，回 Jamrock",
+      "conv": 639,
+      "node": 268,
+      "show_when": "Variable[\"TASK.return_to_mainland_done\"] == true and Variable[\"village.posse_final_shivers\"] == false",
+      "done_when": "Variable[\"village.posse_final_shivers\"] == true"
+    },
+    {
+      "label": "发动小艇前往海堡",
+      "conv": 838,
+      "show_when": "Variable[\"TASK.use_boat\"] == true and Variable[\"TASK.use_boat_done\"] == false",
+      "done_when": "Variable[\"TASK.use_boat_done\"] == true"
+    }
+  ],
+  "exits": [
+    {
+      "label": "回 Joyce 的船边",
+      "to": "pier_joyce",
+      "show_when": "Variable[\"TASK.use_boat_done\"] == false"
+    },
+    {
+      "label": "靠上海堡登岸",
+      "to": "sea_fortress",
+      "show_when": "(Variable[\"TASK.use_boat_done\"] == true or Variable[\"TASK.investigate_sea_fortress_done\"] == true) and (Variable[\"TASK.return_to_mainland\"] == false or Variable[\"TASK.return_to_mainland_cancelled\"] == true)"
+    }
+  ],
+  "ending": {
+    "show_when": "Variable[\"village.posse_final_shivers\"] == true",
+    "title": "结案 · 回 Jamrock 的路上",
+    "text": "案卷合上了。但 Martinaise 还有没走完的路，和没来得及说完的话。你仍可以回去看看；从这里开始，时间不再要求所有人停在同一刻。",
+    "continue_to": [
+      {
+        "label": "回到 Martinaise，把没走完的路走完",
+        "to": "pier_joyce"
+      }
+    ]
+  }
+}

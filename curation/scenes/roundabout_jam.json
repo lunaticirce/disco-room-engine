@@ -1,0 +1,57 @@
+{
+  "id": "roundabout_jam",
+  "name": "Martinaise 环岛 · 货车堵点",
+  "blurb": "吊桥升起后，货车堵在环岛边，像一排搁浅的金属箱。Joyce 说这里有三位司机还在等，也许其中一个在等关键货物。",
+  "home_convs": [
+    460,
+    790,
+    825,
+    830,
+    832,
+    1278
+  ],
+  "points": [
+    {
+      "label": "昏沉的女司机",
+      "conv": 825,
+      "show_when": "Variable[\"TASK.probe_drivers_about_drugs\"] == true and Variable[\"TASK.probe_drivers_about_drugs_done\"] == false"
+    },
+    {
+      "label": "抽烟的货车司机",
+      "conv": 830,
+      "show_when": "Variable[\"TASK.probe_drivers_about_drugs\"] == true and Variable[\"TASK.probe_drivers_about_drugs_done\"] == false"
+    },
+    {
+      "label": "押韵的货车司机",
+      "conv": 1278,
+      "show_when": "Variable[\"TASK.probe_drivers_about_drugs\"] == true and Variable[\"TASK.probe_drivers_about_drugs_done\"] == false"
+    },
+    {
+      "label": "货车阵边的小贩",
+      "conv": 832,
+      "show_when": "Variable[\"TASK.probe_drivers_about_drugs\"] == true and Variable[\"TASK.probe_drivers_about_drugs_done\"] == false"
+    },
+    {
+      "label": "纪念碑旁的绿色 Tempo",
+      "conv": 790,
+      "show_when": "Variable[\"TASK.search_through_the_locked_cabin\"] == true and Variable[\"TASK.search_through_the_locked_cabin_done\"] == false",
+      "done_when": "Variable[\"TASK.search_through_the_locked_cabin_done\"]"
+    },
+    {
+      "label": "Coupris Kineema（你的车）· 取撬棍",
+      "conv": 460,
+      "show_when": "Variable[\"TASK.search_through_the_locked_cabin\"] == true and Variable[\"TASK.search_through_the_locked_cabin_done\"] == false and CheckItem(\"prybar\") == false",
+      "done_when": "CheckItem(\"prybar\")"
+    }
+  ],
+  "exits": [
+    {
+      "label": "回 Joyce 的船边",
+      "to": "pier_joyce"
+    },
+    {
+      "label": "回 Whirling-in-Rags",
+      "to": "whirling_ground_floor"
+    }
+  ]
+}

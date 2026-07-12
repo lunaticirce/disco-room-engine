@@ -1,0 +1,27 @@
+{
+  "id": "coast_reeds",
+  "name": "西北海岸 · 芦苇与浮标",
+  "blurb": "海风把芦苇压向水面。退潮的腥味，远处水面有什么东西在轻轻起伏。",
+  "home_convs": [
+    431
+  ],
+  "points": [
+    {
+      "label": "芦苇里的塑料浮标",
+      "conv": 431,
+      "show_when": "Variable[\"TASK.inspect_the_buoy\"] == true and Variable[\"TASK.inspect_the_buoy_done\"] == false",
+      "done_when": "Variable[\"TASK.inspect_the_buoy_done\"]"
+    }
+  ],
+  "exits": [
+    {
+      "label": "沿海岸去渔村",
+      "to": "fishing_village",
+      "show_when": "(Variable[\"TASK.begin_with_fisherfolk\"] == true and Variable[\"TASK.begin_with_fisherfolk_done\"] == false) or (Variable[\"TASK.ask_about_ruby_in_village\"] == true and Variable[\"TASK.ask_about_ruby_in_village_done\"] == false) or (Variable[\"TASK.ruby_not_village_explore_peninsula\"] == true and Variable[\"TASK.ruby_not_village_explore_peninsula_done\"] == false) or Variable[\"village.ww_greeting_done\"] == true or Variable[\"whirling.lena_husband_across_water_lock\"] == true or Variable[\"TASK.locate_morell\"] == true"
+    },
+    {
+      "label": "回 Whirling-in-Rags",
+      "to": "whirling_ground_floor"
+    }
+  ]
+}

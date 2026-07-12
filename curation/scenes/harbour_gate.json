@@ -1,0 +1,35 @@
+{
+  "id": "harbour_gate",
+  "name": "Martinaise 港口 · 大门",
+  "blurb": "铁栅门紧闭，门后就是工业港——罢工的纠察线、六旋翼货柜吊车和那个叫 Evrart Claire 的工会头子都在里面。门前站着一个纹身巨汉。",
+  "home_convs": [
+    1029,
+    1032,
+    1379,
+    1380,
+    1382,
+    1383,
+    1403
+  ],
+  "points": [
+    {
+      "label": "门口的纹身巨汉（Measurehead）",
+      "conv": 1380
+    },
+    {
+      "label": "栏杆上的悠闲港工（Call Me Mañana）",
+      "conv": 1379
+    },
+    {
+      "label": "门后的工业港（门已开）",
+      "conv": 1029,
+      "show_when": "Variable[\"gates.the_button_has_been_pressed\"] == true or Variable[\"gates.manana_granted_passage_up\"] == true"
+    }
+  ],
+  "exits": [
+    {
+      "label": "回 Whirling-in-Rags",
+      "to": "whirling_ground_floor"
+    }
+  ]
+}

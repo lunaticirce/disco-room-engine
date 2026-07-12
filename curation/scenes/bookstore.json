@@ -1,0 +1,32 @@
+{
+  "id": "bookstore",
+  "name": "Martinaise 书店",
+  "blurb": "玻璃窗后堆着犯罪小说、浪漫传记和旅游小册子。Kim 说这里有 Martinaise 地图；弹道推算需要它。",
+  "home_convs": [
+    487,
+    489,
+    516
+  ],
+  "points": [
+    {
+      "label": "墙上的 Martinaise 地图",
+      "conv": 489,
+      "show_when": "CheckItem(\"map_of_martinaise\") == false",
+      "done_when": "CheckItem(\"map_of_martinaise\") == true"
+    },
+    {
+      "label": "柜台后的 Plaisance",
+      "conv": 516
+    },
+    {
+      "label": "书架上的入门读物",
+      "conv": 487
+    }
+  ],
+  "exits": [
+    {
+      "label": "回 Whirling-in-Rags",
+      "to": "whirling_ground_floor"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+version = 1
+
+[[annotations]]
+path = [
+  ".github/**",
+  ".gitignore",
+  "CONTRIBUTING.md",
+  "LICENSING.md",
+  "NOTICE.md",
+  "README.md",
+  "SECURITY.md",
+  "docs/**",
+  "examples/**",
+  "pyproject.toml",
+  "src/**",
+  "tests/**",
+  "tools/**",
+]
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Chi and contributors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "curation/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Chi and contributors"
+SPDX-License-Identifier = "CC-BY-NC-SA-4.0"

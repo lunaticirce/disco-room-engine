@@ -1,0 +1,38 @@
+{
+  "id": "cuno_shack",
+  "name": "后院 · Cuno 的棚子",
+  "blurb": "暗门拉开。棚子里又暗又闷，泥地，空气里有股甜腻的化学味。几样东西半隐在阴影里，角落有什么在窸窸窣窣地响。",
+  "home_convs": [
+    229,
+    231
+  ],
+  "points": [
+    {
+      "label": "角落里那座沙土堆成的微型塔群",
+      "conv": 229,
+      "set_vars": {
+        "yard.shack_saw_the_locust_city": true,
+        "yard.shack_orb_pighead": true,
+        "yard.shack_orb_magnesolam": true,
+        "yard.shack_orb_poster1": true
+      },
+      "show_when": "Variable[\"yard.shack_saw_the_locust_city\"] == false",
+      "done_when": "Variable[\"yard.shack_saw_the_locust_city\"] == true"
+    },
+    {
+      "label": "镜子上那层白色粉末",
+      "conv": 231,
+      "set_vars": {
+        "yard.shack_orb_silver_plate": true
+      },
+      "show_when": "Variable[\"backyard.shack_elchem_about_speed_done\"] == false",
+      "done_when": "Variable[\"backyard.shack_elchem_about_speed_done\"] == true"
+    }
+  ],
+  "exits": [
+    {
+      "label": "出棚子，回后院",
+      "to": "whirling_ground_floor"
+    }
+  ]
+}

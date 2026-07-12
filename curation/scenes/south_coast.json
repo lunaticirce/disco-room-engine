@@ -1,0 +1,42 @@
+{
+  "id": "south_coast",
+  "name": "南海岸 · 冰面与那栋封死的楼",
+  "blurb": "海面结着冰。风从开阔的冰面上刮过来，远处一栋被木板封死的高楼立在海边——冰面上支着一顶帐篷，帐篷边有人。",
+  "home_convs": [
+    571,
+    588
+  ],
+  "points": [
+    {
+      "label": "冰面上的帐篷（漂白头发的年轻人）",
+      "conv": 576,
+      "show_when": "Variable[\"church.ravers_inside_church\"] == false and Variable[\"church.ravers_inside_church_with_lab\"] == false"
+    },
+    {
+      "label": "帐篷边那个抱着录音机的年轻人",
+      "conv": 574,
+      "show_when": "Variable[\"church.ravers_inside_church\"] == false and Variable[\"church.ravers_inside_church_with_lab\"] == false"
+    }
+  ],
+  "exits": [
+    {
+      "label": "用黄色钥匙开挂锁，进那栋封死的楼",
+      "to": "church_interior",
+      "show_when": "CheckItem(\"key_church_door\")",
+      "set_vars": {
+        "church.church_open_door_w_key": true,
+        "church.churchdoor_broke_into": true,
+        "ice.church_door_transport": true,
+        "church.soona_appears": true
+      }
+    },
+    {
+      "label": "沿海岸回北边的芦苇荡",
+      "to": "west_coast"
+    },
+    {
+      "label": "继续南行去陆地尽头",
+      "to": "lands_end"
+    }
+  ]
+}

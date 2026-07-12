@@ -1,0 +1,47 @@
+{
+  "id": "boardwalk",
+  "name": "Whirling 前的木板路",
+  "blurb": "走出客栈，海风扑面。木板路在脚下嘎吱作响，远处海面灰白。路边立着一个电话亭，再远处隐约有人影。",
+  "home_convs": [
+    1199,
+    1222,
+    1223
+  ],
+  "points": [
+    {
+      "label": "路边的付费电话亭",
+      "conv": 1199,
+      "show_when": "Variable[\"whirling.kimintro_done\"] == true"
+    },
+    {
+      "label": "木板路上那伙人（The Pigs）",
+      "conv": 1222,
+      "show_when": "Variable[\"TASK.confront_the_pigs\"] == true and Variable[\"TASK.confront_the_pigs_done\"] == false",
+      "done_when": "Variable[\"TASK.confront_the_pigs_done\"]"
+    },
+    {
+      "label": "梯子边的 Trant Heidelstam",
+      "conv": 1223,
+      "show_when": "Variable[\"TASK.find_some_moralists\"] == true and Variable[\"TASK.find_some_moralists_done\"] == false",
+      "done_when": "Variable[\"boardwalk.trant_main_hub_reached\"]"
+    },
+    {
+      "label": "海边的长椅（等到入夜）",
+      "conv": 1138,
+      "node": 7,
+      "advance": "night",
+      "show_when": "(IsHourBetween(21,4)) == false"
+    }
+  ],
+  "exits": [
+    {
+      "label": "回 Whirling-in-Rags",
+      "to": "whirling_ground_floor"
+    },
+    {
+      "label": "沿木板路去环岛",
+      "to": "roundabout_jam",
+      "show_when": "Variable[\"TASK.probe_drivers_about_drugs\"] == true and Variable[\"TASK.probe_drivers_about_drugs_done\"] == false"
+    }
+  ]
+}

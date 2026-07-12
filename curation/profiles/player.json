@@ -1,0 +1,12 @@
+{
+  "id": "player",
+  "name": "房间里的侦探",
+  "save": "data/player-save.db",
+  "attrs": {
+    "Intellect": 4,
+    "Psyche": 4,
+    "Physique": 2,
+    "Motorics": 2
+  },
+  "signature_skill": "Inland Empire"
+}

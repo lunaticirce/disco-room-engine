@@ -1,0 +1,92 @@
+{
+  "id": "sea_fortress",
+  "name": "海堡 · 废弃炮塔",
+  "blurb": "海面在身后合拢。废弃炮塔、芦苇、混凝土射击孔和临时生活痕迹挤在这座小岛上；枪声的答案就在这里。",
+  "home_convs": [
+    1282,
+    1286,
+    1291,
+    1293,
+    1295,
+    1296,
+    1298,
+    1299,
+    1301,
+    1315,
+    1316,
+    1317,
+    1319,
+    1321,
+    1322,
+    1323,
+    1360
+  ],
+  "points": [
+    {
+      "label": "混凝土射击孔旁的狙击巢",
+      "conv": 1360,
+      "show_when": "(Variable[\"TASK.determine_where_shot_came_from\"] == true and Variable[\"TASK.determine_where_shot_came_from_done\"] == false) or (Variable[\"TASK.check_seafort\"] == true and Variable[\"TASK.check_seafort_done\"] == false)",
+      "done_when": "Variable[\"TASK.determine_where_shot_came_from_done\"] == true and Variable[\"TASK.check_seafort_done\"] == true"
+    },
+    {
+      "label": "灰烬边持枪的老人",
+      "conv": 1315,
+      "show_when": "(Variable[\"TASK.determine_where_shot_came_from_done\"] == true or Variable[\"seafort.nest_mainhub_got\"] == true or Variable[\"seafort.deserter_prehub_reached\"] == true or Variable[\"TASK.deserter_again\"] == true) and Variable[\"TASK.open_blast_door_done\"] == false"
+    },
+    {
+      "label": "穿过打开的防爆门，接近灰烬边持枪的老人",
+      "conv": 1315,
+      "show_when": "Variable[\"TASK.open_blast_door_done\"] == true"
+    },
+    {
+      "label": "老旧燃油发电机",
+      "conv": 1295
+    },
+    {
+      "label": "外面仍在漏油的旧油桶",
+      "conv": 1291,
+      "show_when": "Variable[\"TASK.fuel_the_generator\"] == true and Variable[\"TASK.fuel_the_generator_done\"] == false and CheckItem(\"fuel_canister_lum\") == false",
+      "done_when": "CheckItem(\"fuel_canister_lum\") == true",
+      "gain_item": "fuel_canister_lum",
+      "set_vars": {
+        "seafort.sense_leaky_barell_clicked": true
+      }
+    },
+    {
+      "label": "角落里的弹簧床垫",
+      "conv": 1296
+    },
+    {
+      "label": "散落的书和杂志",
+      "conv": 1298
+    },
+    {
+      "label": "小型防爆门",
+      "conv": 1299,
+      "done_when": "Variable[\"TASK.open_blast_door_done\"] == true"
+    },
+    {
+      "label": "Feld 旧控制台",
+      "conv": 1301
+    },
+    {
+      "label": "芦苇里的巨大动静",
+      "conv": 1316,
+      "show_when": "(Variable[\"TASK.first_phasmid\"] == true and Variable[\"TASK.first_phasmid_done\"] == false) or (Variable[\"TASK.more_phasmid\"] == true and Variable[\"TASK.more_phasmid_done\"] == false)"
+    },
+    {
+      "label": "芦苇里留下的白色痕迹",
+      "conv": 1323,
+      "node": 376,
+      "show_when": "Variable[\"TASK.inspect_the_phasmid\"] == true and Variable[\"TASK.inspect_the_phasmid_done\"] == false",
+      "done_when": "Variable[\"TASK.inspect_the_phasmid_done\"] == true"
+    }
+  ],
+  "exits": [
+    {
+      "label": "回到小艇边",
+      "to": "motor_skiff",
+      "show_when": "Variable[\"TASK.return_to_mainland\"] == true and Variable[\"TASK.return_to_mainland_done\"] == false"
+    }
+  ]
+}

@@ -53,6 +53,24 @@ class PublicEngineTests(unittest.TestCase):
         self.assertEqual(room.PROFILES, str(self.project / "profiles"))
         self.assertEqual(room.SAVE, str(self.project / "data" / "demo-save.db"))
 
+    def test_new_save_creates_its_missing_parent_directory(self):
+        import json
+        profile = {
+            "id": "nested",
+            "name": "Nested Save",
+            "save": "private-state/nested/player-save.db",
+            "attrs": room.DEFAULT_ATTRS,
+        }
+        profile_path = self.project / "profiles" / "nested.json"
+        profile_path.write_text(json.dumps(profile))
+        save_parent = self.project / "private-state"
+        shutil.rmtree(save_parent, ignore_errors=True)
+
+        room.configure_profile("nested")
+        room.init_save(1, node=1)
+
+        self.assertTrue((save_parent / "nested" / "player-save.db").is_file())
+
     def test_synthetic_graph_initializes_save_and_exposes_choices(self):
         room.init_save(1, node=1)
         c = room.save()

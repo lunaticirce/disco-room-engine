@@ -11,6 +11,8 @@ requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [
   {name = "Chi"},
+  {name = "Ash"},
+  {name = "Lien"},
 ]
 classifiers = [
   "Development Status :: 3 - Alpha",

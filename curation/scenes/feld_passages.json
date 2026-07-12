@@ -1,0 +1,50 @@
+{
+  "id": "feld_passages",
+  "name": "Feld 地下 · 黑暗通道",
+  "blurb": "Feld 楼体下面的通道潮湿、狭窄，远处有低低的电流声。Ruby 的踪迹已经不再只是海风里的猜测。",
+  "home_convs": [
+    526,
+    527,
+    529,
+    532,
+    539
+  ],
+  "points": [
+    {
+      "label": "继续沿黑暗通道搜索",
+      "conv": 529,
+      "show_when": "Variable[\"TASK.explore_the_passages\"] == true and Variable[\"TASK.explore_the_passages_done\"] == false",
+      "done_when": "Variable[\"TASK.explore_the_passages_done\"]"
+    },
+    {
+      "label": "通道尽头的 Ruby",
+      "conv": 527,
+      "show_when": "Variable[\"TASK.enter_cavern\"] == true and Variable[\"TASK.enter_cavern_done\"] == false",
+      "done_when": "Variable[\"TASK.enter_cavern_done\"]"
+    },
+    {
+      "label": "Ruby 的红色帐篷",
+      "conv": 526,
+      "show_when": "Variable[\"TASK.search_tent\"] == true and Variable[\"TASK.search_tent_done\"] == false",
+      "done_when": "Variable[\"TASK.search_tent_done\"]"
+    },
+    {
+      "label": "Ruby 留下的皮面笔记本",
+      "conv": 539,
+      "show_when": "(Variable[\"TASK.read_ruby_journal\"] == true and Variable[\"TASK.read_ruby_journal_done\"] == false) or CheckItem(\"rubys_journal\") == true",
+      "done_when": "Variable[\"TASK.read_ruby_journal_done\"]"
+    }
+  ],
+  "exits": [
+    {
+      "label": "退回 Feld 壁画外",
+      "to": "feld_boardwalk",
+      "show_when": "Variable[\"boardwalk.ruby_lock_exits\"] == false"
+    },
+    {
+      "label": "回 Whirling-in-Rags",
+      "to": "whirling_ground_floor",
+      "show_when": "Variable[\"TASK.return_to_whirling\"] == true or Variable[\"TASK.locate_ruby_on_the_coast_done\"] == true"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "west_coast",
+  "name": "西海岸南端 · 芦苇荡",
+  "blurb": "水闸另一侧，沿海岸一直往南。芦苇比人高，海风把腥味压进泥里。远处有人在蹲着，摆弄地上一只圆筒状的东西。",
+  "home_convs": [
+    1210,
+    1212,
+    1216
+  ],
+  "points": [
+    {
+      "label": "芦苇荡里的 Morell（Lena 的丈夫）",
+      "conv": 1210,
+      "show_when": "Variable[\"TASK.locate_morell\"] == true and Variable[\"TASK.get_morell_back_to_lena_done\"] == false",
+      "done_when": "Variable[\"TASK.get_morell_back_to_lena_done\"] == true"
+    }
+  ],
+  "exits": [
+    {
+      "label": "沿海岸回渔村",
+      "to": "fishing_village"
+    },
+    {
+      "label": "继续南行，沿海岸去冰面与那栋封死的楼",
+      "to": "south_coast"
+    }
+  ]
+}

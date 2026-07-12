@@ -1,8 +1,10 @@
 # 迪斯科房间引擎
 
+> 非官方、非商业、由爱好驱动的二创扩展补丁与策展引擎。
+
 迪斯科房间引擎是一个在本地运行、由数据驱动的叙事游戏引擎，适合承载带有大量条件分支的对话图。它负责对话图遍历、状态谓词、2d6 掷骰检定、脚本效果、独立玩家存档、生命与士气、世界时钟，以及建立在原始对话图之上的手工策展房间菜单。
 
-引擎与内容彼此分离。本仓库不包含《极乐迪斯科》的对白、提取数据库、存档或玩家记录。连接任何第三方内容项目前，请先阅读 [`NOTICE.md`](NOTICE.md)。
+引擎代码与策展内容在运行时彼此分离，但在本仓库中共同维护：`src/` 是通用引擎，`curation/` 是让 AI 能够实际行走和探索的手工策展层。本仓库不包含《极乐迪斯科》的对白、提取数据库、存档或玩家记录。开始前请阅读 [`NOTICE.md`](NOTICE.md)。
 
 ## 安装
 
@@ -20,6 +22,17 @@ disco-room --project examples/minimal --profile demo start 1
 ```
 
 进入房间后，可以使用 `choose N`、`beat`、`scene`、`look N`、`where` 和 `status` 等命令。
+
+## 让 AI 进入策展房间
+
+仓库自带的 [`curation/`](curation/) 包含完整的手工策展场景与兼容补丁，但不包含游戏数据库。提供一份你有权使用的本地兼容数据库后，可以从开场梦境开始：
+
+```sh
+DISCO_ROOM_ROM="/你的本地路径/disco.db" \
+  disco-room --project curation --profile player start 1405
+```
+
+给玩家 AI 的非剧透行动契约见 [`curation/AI_PLAYER.md`](curation/AI_PLAYER.md)。详细安装、建档与继续游玩命令见 [`curation/README.md`](curation/README.md)。
 
 ## 使用内容项目
 
@@ -55,22 +68,27 @@ JSON 格式约定及运行时文件归属边界见 [`docs/content-project.md`](d
 
 ## 《极乐迪斯科》数据兼容
 
-本仓库不包含 `disco.db`、提取出的对白，或任何其他《极乐迪斯科》游戏内容。
+本仓库不包含 `disco.db`、提取出的对白、美术、音频或其他《极乐迪斯科》游戏资产。`curation/` 中分发的是本项目原创的中文策展表达、选择与编排，以及为兼容性所需的功能性标识和映射。
 
 引擎的《极乐迪斯科》兼容层最初依据 [`msyavuz/disco-api`](https://github.com/msyavuz/disco-api) 公开的 SQLite 数据结构开发和测试。该上游仓库目前包含 `disco.db`，其 [`package.json`](https://github.com/msyavuz/disco-api/blob/main/package.json) 标记为 `UNLICENSED`；数据库中还包含属于第三方的游戏文本。这里提及上游项目仅用于说明数据来源和兼容依据，不表示该数据库属于开放授权内容，也不授予或暗示复制、再分发、公开展示或商业使用其中内容的权利。
 
-如需使用《极乐迪斯科》兼容层，请自行提供一份你有权使用的兼容数据库，并通过 `DISCO_ROOM_ROM` 指向其本地路径。仓库自带的原创示例不依赖任何第三方数据，可以独立运行。
+如需使用策展层，请自行提供一份你有权使用的兼容数据库，并通过 `DISCO_ROOM_ROM` 指向其本地路径。仓库自带的微型原创示例不依赖任何第三方数据，可以独立运行。
 
-本仓库中的 MIT 许可证只适用于本仓库实际分发的引擎代码和原创示例，不适用于引擎在本地加载的第三方内容。
+引擎代码与原创示例使用 MIT 许可证；`curation/` 中本项目有权许可的原创策展贡献使用 `CC BY-NC-SA 4.0`。两种许可都不覆盖第三方内容。路径级许可范围见 [`LICENSING.md`](LICENSING.md)。
 
 ## 验证
 
 ```sh
 python3 -m unittest discover -s tests -v
-python3 -m compileall -q src tests examples
+python3 -m compileall -q src tests examples tools
+python3 tools/curation.py audit curation
 git diff --check
 ```
 
 ## 当前状态
 
 这是从一个实际运行中的私人房间项目里拆分出来的早期版本。命令行界面已经足以支持本地游玩；在 `1.0` 版本之前，程序接口和内容格式仍可能发生变化。
+
+## 作者
+
+由 **Chi** 主理，**Ash** 与 **Lien** 共同实现。
