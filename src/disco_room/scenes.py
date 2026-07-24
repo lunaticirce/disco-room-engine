@@ -148,6 +148,7 @@ def menu_items(scene, vars, inv, clock=None):
             "gain_item": p.get("gain_item"),
             "set_vars": p.get("set_vars", {}),
             "advance": p.get("advance"),
+            "heal": p.get("heal"),
             "repeat_heal": p.get("repeat_heal"),
         })
     for e in scene.get("exits", []):
@@ -277,6 +278,36 @@ def apply_repeat_heal(c, conv, node, spec):
     return {pool: vit[f"{pool}_cur"] - vit0[f"{pool}_cur"] for pool in amounts}
 
 
+def apply_rest_heal(c, spec):
+    """Apply a rest-heal tied to a sleep/bench point — UNCONDITIONAL: every rest
+    heals, every time. Unlike repeat_heal (fired-gated, to avoid double-healing a
+    conv's own first-fire ROM heal), rest points carry no ROM heal of their own,
+    so there is no double-heal to avoid. This is the systematic morale/health
+    restore that sleep otherwise lacks (DE's daychange heal is opaque C# we don't run).
+
+    spec: "full" (both pools to max) or {"morale": n, "health": n} (positive ints,
+    capped at max). Returns the applied delta {pool: +n} ({} if already at max).
+    """
+    vit = room.load_vitality(c)
+    vit0 = dict(vit)
+    if spec == "full":
+        pools = ("morale", "health")
+        vit["morale_cur"] = vit["morale_max"]
+        vit["health_cur"] = vit["health_max"]
+    elif isinstance(spec, dict):
+        pools = tuple(pool for pool in ("morale", "health") if pool in spec)
+        for pool in pools:
+            amt = spec[pool]
+            if not isinstance(amt, int) or isinstance(amt, bool) or amt <= 0:
+                raise ValueError(f"rest heal {pool} must be a positive int, got {amt!r}")
+            vit[f"{pool}_cur"] = min(vit[f"{pool}_max"], vit[f"{pool}_cur"] + amt)
+    else:
+        raise ValueError(f"rest heal spec must be 'full' or a dict, got {spec!r}")
+    room.save_vitality(c, vit)
+    room.surface_vitality(vit0, vit)
+    return {pool: vit[f"{pool}_cur"] - vit0[f"{pool}_cur"] for pool in pools}
+
+
 def cmd_look(n, force=False):
     sid = current_scene_id()
     if not sid:
@@ -313,7 +344,7 @@ def cmd_look(n, force=False):
     it = items[n - 1]
     if it["kind"] == "point":
         print(f"（{it['label']}）")
-        if it.get("gain_item") or it.get("set_vars") or it.get("advance") or it.get("repeat_heal"):
+        if it.get("gain_item") or it.get("set_vars") or it.get("advance") or it.get("heal") or it.get("repeat_heal"):
             c = room.save()
             vars = room.load_vars(c)
             inv = room.load_inventory(c)
@@ -340,6 +371,8 @@ def cmd_look(n, force=False):
                 else:
                     clock["minute"] += int(spec)
                 room.save_clock(c, clock)
+            if it.get("heal"):   # rest-heal tied to a sleep/bench point — unconditional, every rest. See apply_rest_heal.
+                apply_rest_heal(c, it["heal"])
             if it.get("repeat_heal"):   # scene-level repeatable rest-heal, fired-gated — see apply_repeat_heal. Only heals on repeat visits; first visit is the conv's own ROM HealEndurance(1).
                 apply_repeat_heal(c, it["conv"], it.get("node"), it["repeat_heal"])
             room.save_vars(c, vars)
