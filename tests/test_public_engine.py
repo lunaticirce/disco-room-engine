@@ -3,6 +3,7 @@ import contextlib
 import io
 import os
 import shutil
+import sqlite3
 import subprocess
 import sys
 import tempfile
@@ -252,6 +253,66 @@ class PublicEngineTests(unittest.TestCase):
             text=True,
         ).stdout.strip()
         self.assertEqual(tracked, "")
+
+
+def _rest_save(morale_cur=5, morale_max=5, health_cur=1, health_max=2):
+    """An in-memory save connection with a seeded vitality row, for rest-heal
+    tests. Mirrors the live vitality schema (room._VITALITY_TBL); apply_rest_heal
+    only touches the vitality table, so no other state is needed."""
+    connection = sqlite3.connect(":memory:")
+    connection.execute(room._VITALITY_TBL)
+    connection.execute(
+        "INSERT INTO vitality VALUES(1,?,?,?,?)",
+        (morale_cur, morale_max, health_cur, health_max),
+    )
+    connection.commit()
+    return connection
+
+
+class RestHealTests(unittest.TestCase):
+    """Public contract for scenes.apply_rest_heal — the rest-heal tied to an
+    `advance` point (bed → morning, bench → night) that restores morale + health
+    UNCONDITIONALLY on every rest. This is the systematic vitality restore that
+    sleep otherwise lacks. See docs/content-project.md (`heal`) and
+    scenes.apply_rest_heal."""
+
+    def test_heals_every_time_unconditional(self):
+        # No fired-gating: every rest heals. Call twice on a fresh save and both
+        # calls restore (contrast with repeat_heal, whose first call is a no-op).
+        c = _rest_save(morale_cur=1, morale_max=5, health_cur=0, health_max=2)
+        with contextlib.redirect_stdout(io.StringIO()):
+            first = scenes.apply_rest_heal(c, {"morale": 2, "health": 2})
+            second = scenes.apply_rest_heal(c, {"morale": 2, "health": 2})
+        self.assertEqual(first, {"morale": 2, "health": 2})
+        self.assertEqual(second, {"morale": 2, "health": 0})  # health already at max
+        vit = room.load_vitality(c)
+        self.assertEqual((vit["morale_cur"], vit["health_cur"]), (5, 2))
+
+    def test_caps_at_max(self):
+        c = _rest_save(morale_cur=5, morale_max=5, health_cur=2, health_max=2)
+        with contextlib.redirect_stdout(io.StringIO()):
+            delta = scenes.apply_rest_heal(c, {"morale": 2, "health": 2})
+        self.assertEqual(delta, {"morale": 0, "health": 0})  # at max → no over-heal
+
+    def test_full_restores_to_max(self):
+        c = _rest_save(morale_cur=1, morale_max=5, health_cur=0, health_max=2)
+        with contextlib.redirect_stdout(io.StringIO()):
+            delta = scenes.apply_rest_heal(c, "full")
+        self.assertEqual(delta, {"morale": 4, "health": 2})
+        vit = room.load_vitality(c)
+        self.assertEqual((vit["morale_cur"], vit["health_cur"]), (5, 2))
+
+    def test_invalid_spec_rejected(self):
+        c = _rest_save()
+        for bad in ("morning", 5, ["morale", 1]):
+            with self.assertRaises(ValueError, msg=f"bad={bad!r}"):
+                scenes.apply_rest_heal(c, bad)
+
+    def test_non_positive_amount_rejected(self):
+        c = _rest_save()
+        for bad in (0, -1, 1.5, True, "1"):
+            with self.assertRaises(ValueError, msg=f"bad={bad!r}"):
+                scenes.apply_rest_heal(c, {"health": bad})
 
 
 if __name__ == "__main__":

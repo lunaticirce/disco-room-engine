@@ -33,6 +33,12 @@
       "conv": 539,
       "show_when": "(Variable[\"TASK.read_ruby_journal\"] == true and Variable[\"TASK.read_ruby_journal_done\"] == false) or CheckItem(\"rubys_journal\") == true",
       "done_when": "Variable[\"TASK.read_ruby_journal_done\"]"
+    },
+    {
+      "label": "墙上的 Kras Mazov 肖像",
+      "conv": 532,
+      "show_when": "Variable[\"TASK.explore_the_passages\"] == true and Variable[\"TASK.explore_the_passages_done\"] == false",
+      "done_when": "Variable[\"XP.lair_portrait_seen\"] == true"
     }
   ],
   "exits": [

@@ -33,7 +33,7 @@
     {
       "label": "28 号门后的抽烟人",
       "conv": 881,
-      "show_when": "Variable[\"TASK.find_apartment_twenty_eight\"] == true and Variable[\"TASK.find_apartment_twenty_eight_done\"] == false and Variable[\"TASK.talk_to_smoker_again_done\"] == false and Variable[\"TASK.interview_the_sunday_friend_done\"] == false and IsHourBetween(21,4) and DayCount() >= 2 and IsTaskActive(\"TASK.visit_the_smoker_on_the_balcony\")",
+      "show_when": "Variable[\"TASK.find_apartment_twenty_eight\"] == true and Variable[\"TASK.talk_to_smoker_again_done\"] == false and Variable[\"TASK.interview_the_sunday_friend_done\"] == false and IsHourBetween(21,4) and DayCount() >= 2 and IsTaskActive(\"TASK.visit_the_smoker_on_the_balcony\")",
       "done_when": "Variable[\"TASK.talk_to_smoker_again_done\"]",
       "set_vars": {
         "backyard.smoker_first_departure": 1
@@ -50,6 +50,12 @@
       "conv": 877,
       "show_when": "Variable[\"TASK.get_speed\"] == true or Variable[\"TASK.get_drugs_from_cunos_apartment\"] == true or Variable[\"TASK.retry_cuno_door\"] == true",
       "done_when": "Variable[\"TASK.get_drugs_from_cunos_apartment_done\"]"
+    },
+    {
+      "label": "12 号房——链子已剪，进去找 Cuno 的爸爸",
+      "conv": 874,
+      "show_when": "Variable[\"apt.cuno_dad_door_interfacing_white_check_succeeded\"] == true and (Variable[\"TASK.get_speed\"] == true or Variable[\"TASK.get_drugs_from_cunos_apartment\"] == true or Variable[\"TASK.retry_cuno_door\"] == true)",
+      "done_when": "Variable[\"apt.cuno_dad_main_hub_reached\"] == true"
     }
   ],
   "exits": [

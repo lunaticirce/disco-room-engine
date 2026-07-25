@@ -43,19 +43,31 @@
       "set_vars": {
         "whirling.bed_day_1": 1
       },
-      "advance": "morning"
+      "advance": "morning",
+      "heal": {
+        "morale": 2,
+        "health": 2
+      }
     },
     {
       "label": "那张床垫（睡到明早）",
       "conv": 1202,
       "show_when": "IsHourBetween(21,4) and Variable[\"whirling.dreamtwo_open_case\"] == true and Variable[\"whirling.dream_3_logic\"] == false",
-      "advance": "morning"
+      "advance": "morning",
+      "heal": {
+        "morale": 2,
+        "health": 2
+      }
     },
     {
       "label": "那张床垫（睡到明早）",
       "conv": 1201,
       "show_when": "IsHourBetween(21,4) and Variable[\"whirling.dream_3_logic\"] == true",
-      "advance": "morning"
+      "advance": "morning",
+      "heal": {
+        "morale": 2,
+        "health": 2
+      }
     }
   ],
   "exits": [

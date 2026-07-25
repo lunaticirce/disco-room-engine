@@ -177,9 +177,9 @@
       "show_when": "Variable[\"TASK.interrogate_klaasje\"] == false or Variable[\"TASK.interrogate_klaasje_done\"] == true or Variable[\"kimswitch.klaasje_rape_talked_of_kim_wants_to_discuss\"]"
     },
     {
-      "label": "出门去当铺找能播放磁带的机器",
+      "label": "出门去当铺（Bird's Nest Roy 的店）",
       "to": "pawnshop",
-      "show_when": "Variable[\"TASK.listen_to_merc_tape\"] == true and Variable[\"TASK.listen_to_merc_tape_done\"] == false and CheckItem(\"boombox\") == false"
+      "show_when": "(Variable[\"TASK.listen_to_merc_tape\"] == true and Variable[\"TASK.listen_to_merc_tape_done\"] == false and CheckItem(\"boombox\") == false) or Variable[\"TASK.listen_to_merc_tape_done\"] == true or Variable[\"canal.roy_intro_done\"] == true"
     },
     {
       "label": "出门去公寓楼找阳台抽烟人",

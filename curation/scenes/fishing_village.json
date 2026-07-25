@@ -41,6 +41,11 @@
       "conv": 172,
       "show_when": "CheckItem(\"key_coast_home\") == true and Variable[\"TASK.washerwoman_hiding_something\"] == true and Variable[\"TASK.washerwoman_hiding_something_done\"] == false",
       "done_when": "Variable[\"TASK.washerwoman_hiding_something_done\"]"
+    },
+    {
+      "label": "那个嚷着「别打给 Abigail」的汉子",
+      "conv": 415,
+      "show_when": "Variable[\"TASK.ask_about_ruby_in_village\"] == true or Variable[\"village.idiot_greeting_done\"] == true or Variable[\"village.abigail_greeting_done\"] == true"
     }
   ],
   "exits": [

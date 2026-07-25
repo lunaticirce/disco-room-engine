@@ -12,6 +12,12 @@
       "label": "船上的 Wild Pines 代表",
       "conv": 765,
       "show_when": "(Variable[\"TASK.interview_wild_pines_rep\"] == true and Variable[\"TASK.interview_wild_pines_rep_done\"] == false) or Variable[\"pier.joyce_met\"] == true"
+    },
+    {
+      "label": "回去找 Joyce 深谈案情（私刑 / 雇佣兵公司）",
+      "conv": 744,
+      "show_when": "Variable[\"pier.joyce_met\"] == true and Variable[\"pier.joyce_lynching_story_told\"] == false",
+      "done_when": "Variable[\"pier.joyce_lynching_story_told\"] == true"
     }
   ],
   "exits": [

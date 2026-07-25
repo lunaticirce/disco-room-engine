@@ -24,6 +24,12 @@
       "label": "门后的工业港（门已开）",
       "conv": 1029,
       "show_when": "Variable[\"gates.the_button_has_been_pressed\"] == true or Variable[\"gates.manana_granted_passage_up\"] == true"
+    },
+    {
+      "label": "回去找 Evrart 要你的枪（Pig 女人的下落）",
+      "conv": 1037,
+      "show_when": "Variable[\"canal.roy_said_she_took\"] == true and (Variable[\"gates.the_button_has_been_pressed\"] == true or Variable[\"gates.manana_granted_passage_up\"] == true)",
+      "done_when": "Variable[\"TASK.confront_the_pigs\"] == true"
     }
   ],
   "exits": [

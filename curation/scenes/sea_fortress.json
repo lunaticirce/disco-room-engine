@@ -80,6 +80,16 @@
       "node": 376,
       "show_when": "Variable[\"TASK.inspect_the_phasmid\"] == true and Variable[\"TASK.inspect_the_phasmid_done\"] == false",
       "done_when": "Variable[\"TASK.inspect_the_phasmid_done\"] == true"
+    },
+    {
+      "label": "岛上不寻常的寂静（远处的鸟翼声）",
+      "conv": 1282,
+      "done_when": "Variable[\"seafort.orb_hearing_silence_done\"] == true"
+    },
+    {
+      "label": "机器上的 ICM 标志",
+      "conv": 1293,
+      "done_when": "Variable[\"seafort.orb_icm_logo_done\"] == true"
     }
   ],
   "exits": [

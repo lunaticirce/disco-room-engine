@@ -30,6 +30,10 @@
       "conv": 1138,
       "node": 7,
       "advance": "night",
+      "heal": {
+        "morale": 1,
+        "health": 1
+      },
       "show_when": "(IsHourBetween(21,4)) == false"
     }
   ],

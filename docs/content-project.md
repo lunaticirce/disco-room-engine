@@ -77,7 +77,9 @@ project/
 }
 ```
 
-场景交互点（point）支持的字段有 `label`、`conv`、`node`、`show_when`、`done_when`、`gain_item`、`set_vars`、`advance` 和 `repeat_heal`。出口（exit）使用 `label`、`to`、`show_when` 和 `set_vars`。一个结局（ending）可以定义 `show_when`、`title`、`text` 以及 `continue_to` 出口。
+场景交互点（point）支持的字段有 `label`、`conv`、`node`、`show_when`、`done_when`、`gain_item`、`set_vars`、`advance`、`heal` 和 `repeat_heal`。出口（exit）使用 `label`、`to`、`show_when` 和 `set_vars`。一个结局（ending）可以定义 `show_when`、`title`、`text` 以及 `continue_to` 出口。
+
+其中与时钟/生命相关的三个键：`advance`（`"morning"`=跳到次日 08:00、`"night"`=跳到当晚 21:00、或正整数=推进 N 分钟）在进入对话前推进时钟；`heal`（`"full"` 或 `{"morale": n, "health": n}`，n 为正整数，封顶为上限）在休息点（床/长椅）无条件恢复士气与生命，每次休息都生效；`repeat_heal`（格式同 `heal`）仅在**重复**访问该点时生效，用于补回被一次性触发吞掉的、对话自带的每次治疗。`heal` 与 `repeat_heal` 互斥：一个点要么带 `heal`（每次都回血），要么带 `repeat_heal`（首次不回、之后每次回）。
 
 ## 数据库
 

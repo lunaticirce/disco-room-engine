@@ -15,7 +15,7 @@ SCENE_KEYS = (
 )
 POINT_KEYS = {
     "label", "conv", "node", "show_when", "done_when", "gain_item",
-    "set_vars", "advance", "repeat_heal",
+    "set_vars", "advance", "heal", "repeat_heal",
 }
 EXIT_KEYS = {"label", "to", "show_when", "set_vars"}
 ENDING_KEYS = {"show_when", "title", "text", "continue_to"}
