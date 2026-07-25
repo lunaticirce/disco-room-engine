@@ -10,7 +10,7 @@
   ],
   "points": [
     {
-      "label": "褪色的 Feld 壁画",
+      "label": "褪色的 Feld 壁画 · Kim 说该把半岛翻一遍",
       "conv": 1237,
       "show_when": "Variable[\"TASK.ruby_not_village_explore_peninsula\"] == true or Variable[\"TASK.inspect_mural\"] == true or Variable[\"TASK.ask_about_ruby_in_village_done\"] == true"
     },
