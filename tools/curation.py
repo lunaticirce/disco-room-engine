@@ -69,16 +69,18 @@ def _validate_heal_spec(spec, path, field, allow_full):
 
 
 def _validate_point_heal(point, path):
-    heal = point.get("heal")
-    repeat = point.get("repeat_heal")
-    if heal is not None and repeat is not None:
+    # Presence via `in`, not .get(): .get() returns None for both an absent key
+    # and an explicit null, so {"heal": null} would slip through as "no heal".
+    has_heal = "heal" in point
+    has_repeat = "repeat_heal" in point
+    if has_heal and has_repeat:
         raise ValueError(f"{path}: point has both heal and repeat_heal; use only one")
-    if heal is not None:
-        _validate_heal_spec(heal, path, "heal", allow_full=True)
-    if repeat is not None:
+    if has_heal:
+        _validate_heal_spec(point["heal"], path, "heal", allow_full=True)
+    if has_repeat:
+        _validate_heal_spec(point["repeat_heal"], path, "repeat_heal", allow_full=False)
         if point.get("node") is None:
             raise ValueError(f"{path}: repeat_heal requires `node` (the fired key)")
-        _validate_heal_spec(repeat, path, "repeat_heal", allow_full=False)
 
 
 def sanitize_scene(data, path):

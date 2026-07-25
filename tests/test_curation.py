@@ -124,6 +124,18 @@ class CurationTests(unittest.TestCase):
             },
             "both heal and repeat_heal",
         )
+        # null must not bypass presence checks: point.get() returns None for both
+        # an absent key and an explicit null, so presence is tested with `in`,
+        # then the type check rejects the null value.
+        expect_bad({"label": "a", "conv": 1, "heal": None}, "heal must be")
+        expect_bad({"label": "a", "conv": 1, "repeat_heal": None}, "repeat_heal must be")
+        expect_bad(
+            {
+                "label": "a", "conv": 1, "node": 1,
+                "heal": None, "repeat_heal": {"health": 1},
+            },
+            "both heal and repeat_heal",
+        )
 
         # valid configs pass without raising
         for ok in (
