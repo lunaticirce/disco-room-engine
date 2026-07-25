@@ -93,6 +93,46 @@ class CurationTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "unknown point keys"):
                 self.tool.export_curation(source, destination)
 
+    def test_heal_config_validation_rejects_misconfigured_points(self):
+        tool = self.tool
+        base = {"id": "room", "name": "room", "points": [], "exits": []}
+
+        def expect_bad(point, needle):
+            with self.assertRaisesRegex(ValueError, needle):
+                tool.sanitize_scene({**base, "points": [point]}, "room.json")
+
+        # heal: empty dict / unknown pool / non-positive / bool / wrong type
+        expect_bad({"label": "a", "conv": 1, "heal": {}}, "heal must not be empty")
+        expect_bad({"label": "a", "conv": 1, "heal": {"stamina": 1}}, "unknown pool")
+        expect_bad({"label": "a", "conv": 1, "heal": {"health": 0}}, "positive int")
+        expect_bad({"label": "a", "conv": 1, "heal": {"health": True}}, "positive int")
+        expect_bad({"label": "a", "conv": 1, "heal": 5}, "heal must be")
+        # repeat_heal: dict-only (not "full"), and requires node
+        expect_bad(
+            {"label": "a", "conv": 1, "node": 1, "repeat_heal": "full"},
+            "repeat_heal must be",
+        )
+        expect_bad(
+            {"label": "a", "conv": 1, "repeat_heal": {"health": 1}},
+            "repeat_heal requires `node`",
+        )
+        # mutual exclusivity: a point can't carry both heal kinds
+        expect_bad(
+            {
+                "label": "a", "conv": 1, "node": 1,
+                "heal": {"health": 1}, "repeat_heal": {"health": 1},
+            },
+            "both heal and repeat_heal",
+        )
+
+        # valid configs pass without raising
+        for ok in (
+            {"label": "a", "conv": 1, "heal": "full"},
+            {"label": "a", "conv": 1, "heal": {"morale": 2, "health": 2}},
+            {"label": "a", "conv": 1, "node": 1, "repeat_heal": {"health": 1}},
+        ):
+            tool.sanitize_scene({**base, "points": [ok]}, "room.json")
+
     def test_bundled_profile_is_anonymous_and_writes_only_ignored_state(self):
         profile = json.loads((CURATION / "profiles" / "player.json").read_text())
         self.assertEqual(profile["id"], "player")

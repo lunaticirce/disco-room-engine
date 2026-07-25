@@ -314,6 +314,14 @@ class RestHealTests(unittest.TestCase):
             with self.assertRaises(ValueError, msg=f"bad={bad!r}"):
                 scenes.apply_rest_heal(c, {"health": bad})
 
+    def test_repeat_heal_rejects_non_dict_spec(self):
+        # repeat_heal is dict-only (it does NOT accept "full", unlike heal). A
+        # non-dict spec used to iterate `pool in spec` over the string, find
+        # nothing, and silently no-op. It now fails loudly.
+        c = _rest_save()
+        with self.assertRaisesRegex(ValueError, "repeat_heal spec must be"):
+            scenes.apply_repeat_heal(c, 1420, 18, "full")
+
 
 if __name__ == "__main__":
     unittest.main()

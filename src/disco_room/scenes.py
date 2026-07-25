@@ -256,6 +256,11 @@ def apply_repeat_heal(c, conv, node, spec):
     """
     if node is None:
         raise ValueError(f"repeat_heal on conv {conv} must specify `node` (the fired key)")
+    if not isinstance(spec, dict):
+        # repeat_heal is dict-only (unlike heal, which also accepts "full"). A
+        # non-dict spec (e.g. "full") would otherwise iterate `pool in spec` over
+        # the string chars, find nothing, and silently no-op. Fail loudly instead.
+        raise ValueError(f"repeat_heal spec must be a dict of pool->positive-int, got {spec!r}")
     if (conv, node) not in room.load_fired(c):
         return {}
     amounts = {}

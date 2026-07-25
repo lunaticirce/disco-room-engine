@@ -20,6 +20,7 @@ POINT_KEYS = {
 EXIT_KEYS = {"label", "to", "show_when", "set_vars"}
 ENDING_KEYS = {"show_when", "title", "text", "continue_to"}
 CONTINUE_KEYS = {"label", "to"}
+HEAL_POOLS = ("morale", "health")
 COMPAT_KEYS = {
     "party_variables", "hidden_player_lines", "condition_replacements",
     "auto_equip_items", "node_set_vars", "state_repairs",
@@ -48,12 +49,45 @@ def reject_unknown(data, allowed, path, kind):
         raise ValueError(f"{path}: unknown {kind} keys: {names}")
 
 
+def _validate_heal_spec(spec, path, field, allow_full):
+    if allow_full and spec == "full":
+        return
+    if not isinstance(spec, dict):
+        kind = '"full" or a dict of pool->positive-int' if allow_full else 'a dict of pool->positive-int'
+        raise ValueError(f"{path}: {field} must be {kind}, got {spec!r}")
+    if not spec:
+        raise ValueError(f"{path}: {field} must not be empty")
+    unknown = [pool for pool in spec if pool not in HEAL_POOLS]
+    if unknown:
+        raise ValueError(
+            f"{path}: {field} has unknown pool(s) {sorted(unknown)}; "
+            f"allowed: {', '.join(HEAL_POOLS)}"
+        )
+    for pool, amount in spec.items():
+        if not isinstance(amount, int) or isinstance(amount, bool) or amount <= 0:
+            raise ValueError(f"{path}: {field} {pool} must be a positive int, got {amount!r}")
+
+
+def _validate_point_heal(point, path):
+    heal = point.get("heal")
+    repeat = point.get("repeat_heal")
+    if heal is not None and repeat is not None:
+        raise ValueError(f"{path}: point has both heal and repeat_heal; use only one")
+    if heal is not None:
+        _validate_heal_spec(heal, path, "heal", allow_full=True)
+    if repeat is not None:
+        if point.get("node") is None:
+            raise ValueError(f"{path}: repeat_heal requires `node` (the fired key)")
+        _validate_heal_spec(repeat, path, "repeat_heal", allow_full=False)
+
+
 def sanitize_scene(data, path):
     reject_unknown(data, set(SCENE_KEYS) | {"notes"}, path, "scene")
     if not isinstance(data.get("id"), str) or not data["id"]:
         raise ValueError(f"{path}: scene id must be a non-empty string")
     for point in data.get("points", []):
         reject_unknown(point, POINT_KEYS, path, "point")
+        _validate_point_heal(point, path)
     for exit_ in data.get("exits", []):
         reject_unknown(exit_, EXIT_KEYS, path, "exit")
     ending = data.get("ending")
