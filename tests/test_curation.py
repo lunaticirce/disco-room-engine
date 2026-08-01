@@ -46,11 +46,11 @@ class CurationTests(unittest.TestCase):
         output = io.StringIO()
         with contextlib.redirect_stdout(output):
             self.tool.audit_curation(CURATION)
-        self.assertIn("22 scenes, 110 points, 53 exits", output.getvalue())
+        self.assertIn("23 scenes, 117 points, 55 exits", output.getvalue())
 
         scenes = [json.loads(path.read_text()) for path in self.scene_files]
-        self.assertEqual(len(scenes), 22)
-        self.assertEqual(sum(len(scene.get("home_convs", [])) for scene in scenes), 100)
+        self.assertEqual(len(scenes), 23)
+        self.assertEqual(sum(len(scene.get("home_convs", [])) for scene in scenes), 116)
 
     def test_all_scene_conditions_parse_without_fail_open(self):
         stderr = io.StringIO()

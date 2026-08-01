@@ -225,6 +225,11 @@
       "label": "出门去木板路",
       "to": "boardwalk",
       "show_when": "Variable[\"whirling.kimintro_done\"]"
+    },
+    {
+      "label": "出门去 Martinaise 广场",
+      "to": "plaza",
+      "show_when": "Variable[\"whirling.kimintro_done\"]"
     }
   ]
 }
