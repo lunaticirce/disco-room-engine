@@ -3,8 +3,10 @@
   "name": "Martinaise 书店",
   "blurb": "玻璃窗后堆着犯罪小说、浪漫传记和旅游小册子。Kim 说这里有 Martinaise 地图；弹道推算需要它。",
   "home_convs": [
+    478,
     487,
     489,
+    513,
     516
   ],
   "points": [
@@ -21,12 +23,32 @@
     {
       "label": "书架上的入门读物",
       "conv": 487
+    },
+    {
+      "label": "柜台后挡着的帘子",
+      "conv": 478,
+      "done_when": "Variable[\"doomed.bookstore_curtains_opened\"] == true"
+    },
+    {
+      "label": "帘子后的后门",
+      "conv": 513,
+      "show_when": "Variable[\"doomed.bookstore_curtains_opened\"] == true and Variable[\"doomed.bookstore_backdoor_unlocked\"] == false",
+      "done_when": "Variable[\"doomed.bookstore_backdoor_unlocked\"] == true"
     }
   ],
   "exits": [
     {
       "label": "回 Whirling-in-Rags",
       "to": "whirling_ground_floor"
+    },
+    {
+      "label": "去 Martinaise 广场",
+      "to": "plaza"
+    },
+    {
+      "label": "穿过已经打开的后门进入废弃商业楼",
+      "to": "doomed",
+      "show_when": "Variable[\"XP.got_into_doomed_commercial_area\"] == true"
     }
   ]
 }

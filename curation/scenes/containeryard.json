@@ -1,0 +1,40 @@
+{
+  "id": "containeryard",
+  "name": "Martinaise · 集装箱场",
+  "blurb": "工业港大门后的集装箱场。成排的货柜、生锈的起重机、墙上的工会标志。",
+  "home_convs": [
+    1031,
+    1040,
+    1049,
+    1052,
+    1055,
+    1056,
+    1081
+  ],
+  "points": [
+    {
+      "label": "货柜边忙活的老人",
+      "conv": 1031
+    },
+    {
+      "label": "起重机的控制面板",
+      "conv": 1081
+    },
+    {
+      "label": "落到地面的货柜门",
+      "conv": 1040,
+      "show_when": "Variable[\"cargo.crane_container_moved\"] == true and Variable[\"cargo.container_door_open\"] == false and Variable[\"cargo.mrlb_has_left\"] == false"
+    },
+    {
+      "label": "货柜里面的人",
+      "conv": 1055,
+      "show_when": "Variable[\"cargo.container_door_open\"] == true and Variable[\"cargo.mrlb_has_left\"] == false"
+    }
+  ],
+  "exits": [
+    {
+      "label": "回港口大门",
+      "to": "harbour_gate"
+    }
+  ]
+}

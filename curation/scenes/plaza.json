@@ -16,6 +16,7 @@
     620,
     779,
     1136,
+    1139,
     242,
     243,
     244
@@ -48,12 +49,25 @@
     {
       "label": "面朝海面的投币观察器",
       "conv": 242
+    },
+    {
+      "label": "废弃商业楼门边的对讲机",
+      "conv": 1139
     }
   ],
   "exits": [
     {
       "label": "回 Whirling-in-Rags",
       "to": "whirling_ground_floor"
+    },
+    {
+      "label": "去 Plaisance 的书店",
+      "to": "bookstore"
+    },
+    {
+      "label": "去那栋废弃商业楼（诅咒）",
+      "to": "doomed",
+      "show_when": "Variable[\"XP.got_into_doomed_commercial_area\"] == true"
     }
   ]
 }

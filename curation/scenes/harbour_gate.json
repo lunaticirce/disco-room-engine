@@ -36,6 +36,11 @@
     {
       "label": "回 Whirling-in-Rags",
       "to": "whirling_ground_floor"
+    },
+    {
+      "label": "进集装箱场深处",
+      "to": "containeryard",
+      "show_when": "Variable[\"gates.the_button_has_been_pressed\"] == true or Variable[\"gates.manana_granted_passage_up\"] == true"
     }
   ]
 }
