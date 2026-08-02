@@ -1,0 +1,47 @@
+{
+  "id": "walkway",
+  "name": "Martinaise · 工业港栈道",
+  "blurb": "工业港深处的旧木栈道。很久以前挨过海军炮火，木板早已失修；生锈的港口机器静静立着，尽头是座守夜人的岗亭，货物皮带堆在一旁。",
+  "home_convs": [
+    1060,
+    1069,
+    1074,
+    1080,
+    1090
+  ],
+  "points": [
+    {
+      "label": "尽头的守夜人岗亭",
+      "conv": 1074
+    },
+    {
+      "label": "散落的空酒瓶和烟头",
+      "conv": 1060,
+      "done_when": "Variable[\"cargo.orb_sad_party_inland_done\"]"
+    },
+    {
+      "label": "身上的卡宾枪夹克",
+      "conv": 1069,
+      "show_when": "CheckEquipped(\"jacket_carabineer\")",
+      "done_when": "Variable[\"cargo.orb_carabineer_jacket_equippage_done\"]"
+    },
+    {
+      "label": "挂在栏杆上的外套",
+      "conv": 1080,
+      "show_when": "IsTaskActive(\"TASK.find_voice_in_harbour\")",
+      "done_when": "Variable[\"cargo.orb_shivers_coatquest_three_done\"]"
+    },
+    {
+      "label": "堆在一旁的货物皮带",
+      "conv": 1090,
+      "show_when": "Variable[\"yard.hangedman_saw_the_belt\"] == true",
+      "done_when": "Variable[\"cargo.containeryard_finish_the_pile_of_belts_thought\"]"
+    }
+  ],
+  "exits": [
+    {
+      "label": "回集装箱场",
+      "to": "containeryard"
+    }
+  ]
+}

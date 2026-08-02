@@ -35,6 +35,10 @@
     {
       "label": "回港口大门",
       "to": "harbour_gate"
+    },
+    {
+      "label": "沿货柜去深处那条旧栈道",
+      "to": "walkway"
     }
   ]
 }
