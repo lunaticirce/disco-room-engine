@@ -1,13 +1,19 @@
 {
   "id": "boardwalk",
-  "name": "Whirling 前的木板路",
-  "blurb": "走出客栈，海风扑面。木板路在脚下嘎吱作响，远处海面灰白。路边立着一个电话亭，再远处隐约有人影。",
+  "name": "西海岸 · 破旧木板道",
+  "blurb": "水闸另一侧，腐朽的木板道伸向废弃的 Feld 大楼。海风穿过断裂的栏杆，电话亭、长椅和一具倒在木板缺口旁的男性尸体留在灰白天光下。",
   "home_convs": [
+    659,
+    1138,
     1199,
     1222,
     1223
   ],
   "points": [
+    {
+      "label": "木板缺口旁的男性尸体",
+      "conv": 659
+    },
     {
       "label": "路边的付费电话亭",
       "conv": 1199,
@@ -26,10 +32,8 @@
       "done_when": "Variable[\"boardwalk.trant_main_hub_reached\"]"
     },
     {
-      "label": "海边的长椅（等到入夜）",
+      "label": "海边的长椅",
       "conv": 1138,
-      "node": 7,
-      "advance": "night",
       "heal": {
         "morale": 1,
         "health": 1
@@ -39,7 +43,7 @@
   ],
   "exits": [
     {
-      "label": "回 Whirling-in-Rags",
+      "label": "穿过水闸回 Whirling-in-Rags",
       "to": "whirling_ground_floor"
     },
     {
