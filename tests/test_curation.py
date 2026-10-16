@@ -97,6 +97,28 @@ class CurationTests(unittest.TestCase):
                     1,
                 ))
 
+    def test_harbour_gate_requires_the_door_button_not_manana_permission(self):
+        scene = json.loads((CURATION / "scenes" / "harbour_gate.json").read_text())
+
+        def visible_keys(variables):
+            return {
+                (item["kind"], item.get("conv"), item.get("to"))
+                for item in scenes.menu_items(scene, variables, {})
+            }
+
+        manana_only = {
+            "gates.manana_granted_passage_up": True,
+            "canal.roy_said_she_took": True,
+        }
+        self.assertNotIn(("point", 1029, None), visible_keys(manana_only))
+        self.assertNotIn(("point", 1037, None), visible_keys(manana_only))
+        self.assertNotIn(("exit", None, "containeryard"), visible_keys(manana_only))
+
+        opened = {**manana_only, "gates.the_button_has_been_pressed": True}
+        self.assertIn(("point", 1029, None), visible_keys(opened))
+        self.assertIn(("point", 1037, None), visible_keys(opened))
+        self.assertIn(("exit", None, "containeryard"), visible_keys(opened))
+
     def test_export_strips_only_notes_and_rejects_unknown_fields(self):
         with tempfile.TemporaryDirectory() as tmp:
             source = Path(tmp) / "source"
