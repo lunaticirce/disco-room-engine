@@ -423,26 +423,38 @@ def beat_options_with_origin(c, conv, start, vars, inv, fired=None, fire=None, v
     Condition-failed branches are hidden — the detective only sees what he's earned.
     `fire(conv, nid)` is called on each node traversed; its userscript fires once
     by convention of the caller's fire-once guard."""
-    npc = []; seen = set(); cur = (conv, start)
+    npc = []; seen = set(); cur = (conv, start); previous = None
     while cur is not None and cur not in seen:
         seen.add(cur)
         cur_conv, cur_node = cur
         n = get_node(c, cur_conv, cur_node)
         if n is None:
             return npc, [], cur
+        if is_text(n):
+            sp = actor_name(c, n["actor"])
+            if sp == "You":
+                # A terminal player line reached *from* the preceding NPC line is
+                # still a choice the player must make: its userscript may carry
+                # essential state (commonly on a final ``[Leave.]`` option).  Only
+                # treat it as an exhausted terminal when the save was already
+                # positioned on that same no-outgoing player node. Do not fire a
+                # player's userscript merely by displaying the option; cmd_choose
+                # fires it after the player actually speaks.
+                if cur == (conv, start) and not outs_passing(
+                        c, cur_conv, cur_node, vars, inv, vit, clock):
+                    return npc, [], cur
+                return npc, [cur], previous or cur
         if fire:
             fire(cur_conv, cur_node)
         if is_text(n):
             sp = actor_name(c, n["actor"])
-            if sp == "You":           # current position is an already-chosen player line
-                if not outs_passing(c, cur_conv, cur_node, vars, inv, vit, clock):
-                    return npc, [], cur
-                return npc, [cur], cur
-            npc.append((sp, n["dialoguetext"]))
+            if sp != "You":
+                npc.append((sp, n["dialoguetext"]))
         ps = outs_passing(c, cur_conv, cur_node, vars, inv, vit, clock)
         if not ps:
             return npc, [], cur       # terminal
         if len(ps) == 1:
+            previous = cur
             cur = ps[0]; continue
         # fork: resolve each passing child to its player line
         opts = []; seen_opts = set()
@@ -1535,6 +1547,11 @@ def cmd_choose(n):
     print_breakdown(broke)
     if nxt is None:
         move(pick_conv, pick_node, n, picked_line)
+        # The walk ran out without reaching another NPC line: the conversation is
+        # over. Clear the position so a terminal player line that still has
+        # (non-NPC) outgoing links isn't re-offered as the sole option, which left
+        # the player "in dialogue" with only a ghost [Leave.]. (Kaine, 2026-10-16)
+        abandon_conversation()
         scenes = scene_module()
         scenes.maybe_show_scene(pick_conv)
         return
