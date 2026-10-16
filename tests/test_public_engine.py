@@ -93,6 +93,73 @@ class PublicEngineTests(unittest.TestCase):
         )
         self.assertTrue(variables["demo.notebook_open"])
 
+    def test_dialogue_clock_advances_per_spoken_box_without_beat_replay(self):
+        rom_path = self.project / "data" / "disco-rom.db"
+        c = sqlite3.connect(rom_path)
+        c.executemany(
+            "INSERT INTO temp_table VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            [
+                (100, "Clock NPC", "First box.", 1, 0, 99, 0, 0, 0, "0", 0, "", ""),
+                (101, "Again", "Say it again.", 0, 0, 99, 0, 0, 0, "0", 0, "", ""),
+                (102, "Clock NPC", "Second box.", 1, 0, 99, 0, 0, 0, "0", 0, "", ""),
+            ],
+        )
+        c.executemany(
+            "INSERT INTO dlinks VALUES(?,?,?,?,?,?)",
+            [
+                (99, 100, 99, 101, 0, 1),
+                (99, 101, 99, 102, 0, 1),
+                (99, 102, 99, 101, 0, 1),
+            ],
+        )
+        c.commit()
+        c.close()
+
+        with contextlib.redirect_stdout(io.StringIO()):
+            room.cmd_start(99, node=100)
+        save = room.save()
+        self.assertEqual(room.load_clock(save), {"day": 1, "minute": 600, "second": 23})
+        save.close()
+
+        # Redrawing the same beat must not manufacture elapsed time.
+        with contextlib.redirect_stdout(io.StringIO()):
+            room.cmd_beat()
+        save = room.save()
+        self.assertEqual(room.load_clock(save), {"day": 1, "minute": 600, "second": 23})
+        save.close()
+
+        # A choice speaks one player box and reaches one NPC box: +46 seconds.
+        with contextlib.redirect_stdout(io.StringIO()):
+            room.cmd_choose(1)
+        save = room.save()
+        self.assertEqual(room.load_clock(save), {"day": 1, "minute": 601, "second": 9})
+        save.close()
+
+        # Deliberately choosing the loop again is a real repeated exchange: +46s.
+        with contextlib.redirect_stdout(io.StringIO()):
+            room.cmd_choose(1)
+        save = room.save()
+        self.assertEqual(room.load_clock(save), {"day": 1, "minute": 601, "second": 55})
+        save.close()
+
+    def test_legacy_clock_schema_gains_seconds_without_rewriting_time(self):
+        room.init_save(1, node=1)
+        save = room.save()
+        save.execute("DROP TABLE IF EXISTS clock")
+        save.execute(
+            "CREATE TABLE clock(key INTEGER PRIMARY KEY, day INTEGER NOT NULL, minute INTEGER NOT NULL)"
+        )
+        save.execute("INSERT INTO clock VALUES(1, 4, 777)")
+        save.commit()
+
+        self.assertEqual(
+            room.load_clock(save),
+            {"day": 4, "minute": 777, "second": 0},
+        )
+        columns = {row[1] for row in save.execute("PRAGMA table_info(clock)")}
+        self.assertIn("second", columns)
+        save.close()
+
     def test_terminal_player_line_is_shown_and_fires_before_leave(self):
         # Regression: an NPC line followed by a no-outgoing player ``[Leave.]``
         # used to be treated as if the player had already chosen it.  The option

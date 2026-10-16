@@ -364,15 +364,15 @@ def cmd_look(n, force=False):
                     # next 08:00 — if before 08:00 (e.g. slept at 01:00) keep the same day; else roll to tomorrow.
                     # (The bed is night-gated 21:00–04:59, so an early-morning sleep must not skip the day.)
                     if clock["minute"] < 8 * 60:
-                        clock["minute"] = 8 * 60
+                        clock["minute"] = 8 * 60; clock["second"] = 0
                     else:
-                        clock["day"] += 1; clock["minute"] = 8 * 60
+                        clock["day"] += 1; clock["minute"] = 8 * 60; clock["second"] = 0
                 elif spec == "night":
                     night = 21 * 60
                     if clock["minute"] < night:
-                        clock["minute"] = night
+                        clock["minute"] = night; clock["second"] = 0
                     else:
-                        clock["day"] += 1; clock["minute"] = night
+                        clock["day"] += 1; clock["minute"] = night; clock["second"] = 0
                 else:
                     clock["minute"] += int(spec)
                 room.save_clock(c, clock)

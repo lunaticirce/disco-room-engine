@@ -205,6 +205,7 @@ def entry_node(c, conv):
 # `Variable["x"]` reads the current profile's world-vars; predicates are stubbed to the honest
 # opening state (no companions, thoughts, or inventory; day one, morning).
 HOUR = 10   # the detective wakes mid-morning of day one; refine when DE's clock matters
+DIALOGUE_SECONDS = 23   # Disco Elysium advances roughly one 23-second tick per spoken text box
 
 class VarProxy:
     def __init__(self, vars): self.vars = vars
@@ -218,6 +219,8 @@ def _clock_parts(clock=None):
     """Return a normalized (day, minute, hour) tuple without mutating the clock."""
     day = clock["day"] if clock else _day_count()
     minute = clock["minute"] if clock else (HOUR * 60)
+    if clock:
+        minute += clock.get("second", 0) // 60
     day += minute // 1440
     minute %= 1440
     return day, minute, minute // 60
@@ -771,7 +774,7 @@ def apply_userscript(script, vars, inv, vit=None, clock=None):
         for _args in iter_lua_calls(script, "PassTime"):
             clock["minute"] += 15
         for _args in iter_lua_calls(script, "LetterSleep"):
-            clock["day"] += 1; clock["minute"] = 8 * 60
+            clock["day"] += 1; clock["minute"] = 8 * 60; clock["second"] = 0
         normalize_clock(clock)   # roll minute overflow into day mid-traversal
 
 def apply_repeatable_userscript(script, clock=None):
@@ -1065,38 +1068,64 @@ def save_vitality(c, vit):
               "morale_cur=excluded.morale_cur,morale_max=excluded.morale_max,health_cur=excluded.health_cur,health_max=excluded.health_max",
               (vit["morale_cur"], vit["morale_max"], vit["health_cur"], vit["health_max"]))
 
-_CLOCK_TBL = "CREATE TABLE IF NOT EXISTS clock(key INTEGER PRIMARY KEY, day INTEGER NOT NULL, minute INTEGER NOT NULL)"
+_CLOCK_TBL = "CREATE TABLE IF NOT EXISTS clock(key INTEGER PRIMARY KEY, day INTEGER NOT NULL, minute INTEGER NOT NULL, second INTEGER NOT NULL DEFAULT 0)"
+
+def _ensure_clock_table(c):
+    """Create the clock and add sub-minute precision to pre-dialogue-clock saves.
+
+    Adding the column does not infer or rewrite an old save's day/minute; it only
+    gives future dialogue ticks somewhere durable to keep their remainder.
+    """
+    c.execute(_CLOCK_TBL)
+    columns = {r[1] for r in c.execute("PRAGMA table_info(clock)")}
+    if "second" not in columns:
+        c.execute("ALTER TABLE clock ADD COLUMN second INTEGER NOT NULL DEFAULT 0")
 
 def load_clock(c):
     """Self-healing: ensure the clock table + seeded row exist (Day 1, 10:00), then return it.
-    Stores minute-of-day (0..1439) — PassTime is 15-min granularity. See docs/clock.md."""
-    c.execute(_CLOCK_TBL)
-    r = c.execute("SELECT day, minute FROM clock WHERE key=1").fetchone()
+    Stores minute-of-day (0..1439) plus a sub-minute remainder. See docs/clock.md."""
+    _ensure_clock_table(c)
+    r = c.execute("SELECT day, minute, second FROM clock WHERE key=1").fetchone()
     if r:
-        return {"day": r[0], "minute": r[1]}
-    c.execute("INSERT INTO clock VALUES(1,?,?)", (1, 10 * 60)); c.commit()   # Day 1, 10:00
-    return {"day": 1, "minute": 10 * 60}
+        return {"day": r[0], "minute": r[1], "second": r[2]}
+    c.execute(
+        "INSERT INTO clock(key,day,minute,second) VALUES(1,?,?,?)",
+        (1, 10 * 60, 0),
+    )
+    c.commit()   # Day 1, 10:00
+    return {"day": 1, "minute": 10 * 60, "second": 0}
 
 def normalize_clock(clock):
-    """Normalize minute overflow into the day, in-place. Day floored at 1; negative minutes
-    defensive only. Used after time-verb mutation (apply_userscript/cmd_time) so mid-traversal
-    reads see a clean clock, and by save_clock. See docs/clock.md."""
+    """Normalize second/minute overflow into the day, in-place. Day floored at 1;
+    negative values are defensive only. See docs/clock.md."""
     day = clock["day"]; minute = clock["minute"]
+    second = clock.get("second", 0)
+    minute += second // 60; second %= 60
     day += minute // 1440; minute %= 1440
     if minute < 0:
         minute += 1440; day -= 1
     if day < 1:
         day = 1
-    clock["day"] = day; clock["minute"] = minute
+    clock["day"] = day; clock["minute"] = minute; clock["second"] = second
     return clock
+
+def advance_dialogue_clock(clock):
+    """Advance one spoken dialogue box, preserving the 23-second remainder."""
+    if clock is None:
+        return
+    clock["second"] = clock.get("second", 0) + DIALOGUE_SECONDS
+    normalize_clock(clock)
 
 def save_clock(c, clock):
     """Persist. normalize_clock first (minute >= 1440 rolls day forward; day floored at 1) —
     in-place, so the caller's dict reflects the normalized value too."""
-    c.execute(_CLOCK_TBL)
+    _ensure_clock_table(c)
     normalize_clock(clock)
-    c.execute("INSERT INTO clock VALUES(1,?,?) ON CONFLICT(key) DO UPDATE SET day=excluded.day,minute=excluded.minute",
-              (clock["day"], clock["minute"]))
+    c.execute(
+        "INSERT INTO clock(key,day,minute,second) VALUES(1,?,?,?) "
+        "ON CONFLICT(key) DO UPDATE SET day=excluded.day,minute=excluded.minute,second=excluded.second",
+        (clock["day"], clock["minute"], clock["second"]),
+    )
 
 def surface_vitality(before, after):
     """Print inline damage/heal changes (like the check-roll line). Beats otherwise stay clean."""
@@ -1133,11 +1162,15 @@ def make_fire(c, vars, inv, fired, vit=None, clock=None, repeat_existing=False):
             if repeat_existing:
                 n = get_node(c, conv, nid)
                 if n:
+                    if is_text(n):
+                        advance_dialogue_clock(clock)
                     apply_repeatable_userscript(n["userscript"], clock)
             return
         fired.add((conv, nid))
         n = get_node(c, conv, nid)
         if n:
+            if is_text(n):
+                advance_dialogue_clock(clock)
             apply_userscript(n["userscript"], vars, inv, vit, clock)
         vars.update(COMPAT.get("node_set_vars", {}).get(f"{conv}:{nid}", {}))
     return fire
@@ -1659,7 +1692,7 @@ def cmd_time(args):
             save_clock(c, clock); c.commit()
             print(f"🕐 +{hours}h → {fmt(clock)}")
         elif sub == "next-day":
-            clock["day"] += 1; clock["minute"] = 8 * 60
+            clock["day"] += 1; clock["minute"] = 8 * 60; clock["second"] = 0
             save_clock(c, clock); c.commit()
             print(f"🕐 次日清晨 → {fmt(clock)}")
         else:
