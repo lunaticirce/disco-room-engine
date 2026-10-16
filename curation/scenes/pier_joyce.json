@@ -38,7 +38,7 @@
     {
       "label": "沿海岸去渔村",
       "to": "fishing_village",
-      "show_when": "(Variable[\"TASK.begin_with_fisherfolk\"] == true and Variable[\"TASK.begin_with_fisherfolk_done\"] == false) or (Variable[\"TASK.ask_about_ruby_in_village\"] == true and Variable[\"TASK.ask_about_ruby_in_village_done\"] == false) or (Variable[\"TASK.ruby_not_village_explore_peninsula\"] == true and Variable[\"TASK.ruby_not_village_explore_peninsula_done\"] == false) or Variable[\"village.ww_greeting_done\"] == true or Variable[\"whirling.lena_husband_across_water_lock\"] == true or Variable[\"TASK.locate_morell\"] == true"
+      "show_when": "(DayCount() >= 3 or Variable[\"canal.know_water_lock_fixed\"] == true) and ((Variable[\"TASK.begin_with_fisherfolk\"] == true and Variable[\"TASK.begin_with_fisherfolk_done\"] == false) or (Variable[\"TASK.ask_about_ruby_in_village\"] == true and Variable[\"TASK.ask_about_ruby_in_village_done\"] == false) or (Variable[\"TASK.ruby_not_village_explore_peninsula\"] == true and Variable[\"TASK.ruby_not_village_explore_peninsula_done\"] == false) or Variable[\"village.ww_greeting_done\"] == true or Variable[\"whirling.lena_husband_across_water_lock\"] == true or Variable[\"TASK.locate_morell\"] == true)"
     },
     {
       "label": "去小艇边准备前往海堡",

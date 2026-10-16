@@ -14,7 +14,7 @@ SRC = ROOT / "src"
 CURATION = ROOT / "curation"
 sys.path.insert(0, str(SRC))
 
-from disco_room import room
+from disco_room import room, scenes
 
 
 def load_curation_tool():
@@ -65,6 +65,37 @@ class CurationTests(unittest.TestCase):
                         clock={"day": 2, "minute": 21 * 60},
                     )
         self.assertEqual(stderr.getvalue(), "")
+
+    def test_water_lock_routes_wait_until_day_three_or_known_fixed(self):
+        route_vars = {"TASK.locate_morell": True}
+        gated_scenes = ("whirling_ground_floor", "pier_joyce", "coast_reeds")
+
+        def can_reach_village(scene_id, variables, day):
+            scene = json.loads((CURATION / "scenes" / f"{scene_id}.json").read_text())
+            items = scenes.menu_items(
+                scene,
+                variables,
+                {},
+                clock={"day": day, "minute": 10 * 60},
+            )
+            return any(
+                item["kind"] == "exit" and item["to"] == "fishing_village"
+                for item in items
+            )
+
+        for scene_id in gated_scenes:
+            with self.subTest(scene=scene_id, day=1):
+                self.assertFalse(can_reach_village(scene_id, route_vars, 1))
+            with self.subTest(scene=scene_id, day=2):
+                self.assertFalse(can_reach_village(scene_id, route_vars, 2))
+            with self.subTest(scene=scene_id, day=3):
+                self.assertTrue(can_reach_village(scene_id, route_vars, 3))
+            with self.subTest(scene=scene_id, known_fixed=True):
+                self.assertTrue(can_reach_village(
+                    scene_id,
+                    {**route_vars, "canal.know_water_lock_fixed": True},
+                    1,
+                ))
 
     def test_export_strips_only_notes_and_rejects_unknown_fields(self):
         with tempfile.TemporaryDirectory() as tmp:
