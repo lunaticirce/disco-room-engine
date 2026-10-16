@@ -93,6 +93,49 @@ class PublicEngineTests(unittest.TestCase):
         )
         self.assertTrue(variables["demo.notebook_open"])
 
+    def test_terminal_player_line_is_shown_and_fires_before_leave(self):
+        # Regression: an NPC line followed by a no-outgoing player ``[Leave.]``
+        # used to be treated as if the player had already chosen it.  The option
+        # disappeared and its state-setting userscript never ran.
+        rom_path = self.project / "data" / "disco-rom.db"
+        c = sqlite3.connect(rom_path)
+        c.execute(
+            "INSERT INTO temp_table VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            (10, "NPC", "A private word before we continue.", 1, 0, 2,
+             0, 0, 0, "0", 0, "", ""),
+        )
+        c.execute(
+            "INSERT INTO temp_table VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            (11, "Leave", '"Excuse us for a moment." [Leave.]', 0, 0, 2,
+             0, 0, 0, "0", 0, "",
+             'SetVariableValue("demo.private_talk", true)'),
+        )
+        c.execute("INSERT INTO dlinks VALUES(2,10,2,11,0,2)")
+        c.commit()
+        c.close()
+
+        room.init_save(2, node=10)
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            room.cmd_beat()
+        self.assertIn('"Excuse us for a moment." [Leave.]', output.getvalue())
+
+        save = room.save()
+        variables = room.load_vars(save)
+        position = save.execute(
+            "SELECT conv,node FROM position WHERE key=1"
+        ).fetchone()
+        save.close()
+        self.assertFalse(variables.get("demo.private_talk", False))
+        self.assertEqual(tuple(position), (2, 10))
+
+        with contextlib.redirect_stdout(io.StringIO()):
+            room.cmd_choose(1)
+        save = room.save()
+        variables = room.load_vars(save)
+        save.close()
+        self.assertTrue(variables["demo.private_talk"])
+
     def test_condition_ast_rejects_python_object_access(self):
         stderr = io.StringIO()
         with contextlib.redirect_stderr(stderr):

@@ -24,6 +24,9 @@
   "node_set_vars": {
     "790:331": {
       "jam.abandoned_window_broken": true
+    },
+    "745:13": {
+      "curation.kim_narcotics_private_talk_done": true
     }
   },
   "state_repairs": [

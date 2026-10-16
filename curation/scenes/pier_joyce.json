@@ -5,13 +5,22 @@
   "home_convs": [
     765,
     744,
-    759
+    759,
+    995,
+    745
   ],
   "points": [
     {
       "label": "船上的 Wild Pines 代表",
       "conv": 765,
       "show_when": "(Variable[\"TASK.interview_wild_pines_rep\"] == true and Variable[\"TASK.interview_wild_pines_rep_done\"] == false) or Variable[\"pier.joyce_met\"] == true"
+    },
+    {
+      "label": "和 Kim 私下谈 Joyce 的委托",
+      "conv": 995,
+      "node": 411,
+      "show_when": "Variable[\"kimswitch.narcotics_invest_talk\"] == true and Variable[\"curation.kim_narcotics_private_talk_done\"] == false",
+      "done_when": "Variable[\"curation.kim_narcotics_private_talk_done\"] == true"
     },
     {
       "label": "回去找 Joyce 深谈案情（私刑 / 雇佣兵公司）",
