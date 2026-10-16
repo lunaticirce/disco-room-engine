@@ -222,9 +222,9 @@
       "show_when": "Variable[\"yard.cuno_been_opened_the_shack_door\"] == true and (Variable[\"yard.shack_saw_the_locust_city\"] == false or Variable[\"backyard.shack_elchem_about_speed_done\"] == false)"
     },
     {
-      "label": "出门去木板路",
+      "label": "穿过水闸去西海岸木板道",
       "to": "boardwalk",
-      "show_when": "Variable[\"whirling.kimintro_done\"]"
+      "show_when": "Variable[\"whirling.kimintro_done\"] and (DayCount() >= 3 or Variable[\"canal.know_water_lock_fixed\"] == true)"
     },
     {
       "label": "出门去 Martinaise 广场",

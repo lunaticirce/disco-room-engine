@@ -46,11 +46,11 @@ class CurationTests(unittest.TestCase):
         output = io.StringIO()
         with contextlib.redirect_stdout(output):
             self.tool.audit_curation(CURATION)
-        self.assertIn("26 scenes, 134 points, 64 exits", output.getvalue())
+        self.assertIn("26 scenes, 135 points, 64 exits", output.getvalue())
 
         scenes = [json.loads(path.read_text()) for path in self.scene_files]
         self.assertEqual(len(scenes), 26)
-        self.assertEqual(sum(len(scene.get("home_convs", [])) for scene in scenes), 143)
+        self.assertEqual(sum(len(scene.get("home_convs", [])) for scene in scenes), 145)
 
     def test_all_scene_conditions_parse_without_fail_open(self):
         stderr = io.StringIO()
@@ -96,6 +96,43 @@ class CurationTests(unittest.TestCase):
                     {**route_vars, "canal.know_water_lock_fixed": True},
                     1,
                 ))
+
+    def test_boardwalk_is_post_water_lock_and_includes_its_missing_content(self):
+        whirling = json.loads((
+            CURATION / "scenes" / "whirling_ground_floor.json"
+        ).read_text())
+
+        def can_reach_boardwalk(day, known_fixed=False):
+            items = scenes.menu_items(
+                whirling,
+                {
+                    "whirling.kimintro_done": True,
+                    "canal.know_water_lock_fixed": known_fixed,
+                },
+                {},
+                clock={"day": day, "minute": 10 * 60},
+            )
+            return any(
+                item["kind"] == "exit" and item["to"] == "boardwalk"
+                for item in items
+            )
+
+        self.assertFalse(can_reach_boardwalk(1))
+        self.assertFalse(can_reach_boardwalk(2))
+        self.assertTrue(can_reach_boardwalk(3))
+        self.assertTrue(can_reach_boardwalk(1, known_fixed=True))
+
+        boardwalk = json.loads((
+            CURATION / "scenes" / "boardwalk.json"
+        ).read_text())
+        self.assertEqual(boardwalk["name"], "西海岸 · 破旧木板道")
+        self.assertIn(659, boardwalk["home_convs"])
+        self.assertIn(1138, boardwalk["home_convs"])
+        self.assertIn(659, {point["conv"] for point in boardwalk["points"]})
+
+        bench = next(point for point in boardwalk["points"] if point["conv"] == 1138)
+        self.assertNotIn("node", bench)
+        self.assertNotIn("advance", bench)
 
     def test_harbour_gate_requires_the_door_button_not_manana_permission(self):
         scene = json.loads((CURATION / "scenes" / "harbour_gate.json").read_text())
